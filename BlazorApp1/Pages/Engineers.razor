@@ -1,0 +1,36 @@
+﻿@page "/engineer"
+@using Models
+@inherits AddEngineerForm
+
+<BTab>
+    <BTabPanel Title="工程师一览">
+        工程师一览
+    </BTabPanel>
+
+    <BTabPanel Title="添加工程师">
+        <BForm Style="width:400px;" @ref="addEngForm">
+            <BFormItem TValue="string" Name="@nameof(Models.Engineer.Name)" Label="姓名" IsRequired="true">
+                <BInput TValue="string"></BInput>
+            </BFormItem>
+            <BFormItem TValue="int" Name="@nameof(Models.Engineer.ID)" Label="ID" IsRequired="true">
+                <BInput Value="Data.SqlServerCtl.newEngineerID()" IsDisabled="true"></BInput>
+            </BFormItem>
+            <BFormItem TValue="Models.Engineer.workshop" Label="车间" Name="@nameof(Models.Engineer.Workshop)" IsRequired="true">
+                <BSelect TValue="Models.Engineer.workshop" Placeholder="请选择车间">
+                </BSelect>
+            </BFormItem>
+            <BFormItem TValue="Models.Engineer.group" Label="组别" Name="@nameof(Models.Engineer.Group)" IsRequired="true">
+                <BSelect TValue="Models.Engineer.group" Placeholder="请选择组别">
+                </BSelect>
+            </BFormItem>
+            <BFormActionItem>
+                <BButton Type="@ButtonType.Primary" OnClick="e=>Submit()">立即添加</BButton>
+                <BButton OnClick="e=>Reset()">重置</BButton>
+            </BFormActionItem>
+        </BForm>
+    </BTabPanel>
+</BTab>
+
+@code {
+
+}
