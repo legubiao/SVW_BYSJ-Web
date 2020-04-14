@@ -22,6 +22,7 @@ namespace BlazorApp1.Models
         {
             TC3B1,
             TC3B2,
+            TC3B,
             PQ
         }
 

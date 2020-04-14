@@ -1,0 +1,25 @@
+﻿@using Models
+
+<p>备件描述: @partInfo.Description</p>
+<p>DC物料号: @partInfo.DCNumber</p>
+<p>SVW物料号: @partInfo.SVWNumber</p>
+<p>物料生成日期: @partInfo.CreatDate</p>
+<p>设备制造商: @partInfo.DeviceProducer</p>
+<p>备件制造商: @partInfo.PartProducer</p>
+<p>机器号: @partInfo.MachineNumber</p>
+<p>图号: @partInfo.MapNumber</p>
+<p>计量单位: @partInfo.CountUnit</p>
+<p>ABC码: @partInfo.ABCNumber</p>
+<p>计划员码: @partInfo.PlannerNumber</p>
+<p>最小安全库存: @partInfo.MinSafetyStock</p>
+<p>最大安全库存: @partInfo.MaxSafetyStock</p>
+<p>采购周期: @partInfo.OrderCycle</p>
+<p>物料属性: @partInfo.PartProperty</p>
+<p>是否有物料安全标识: @partInfo.IsSafety</p>
+<p>产地: @partInfo.ProducingArea</p>
+
+
+@code {
+    [Parameter]
+    public SparePart partInfo { get; set; }
+}

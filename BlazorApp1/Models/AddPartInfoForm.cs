@@ -1,37 +1,37 @@
-﻿
-using BlazorApp1.Data;
+﻿using BlazorApp1.Data;
 using Blazui.Component.Form;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlazorApp1.Models
 {
-    public class AddEngineerForm:ComponentBase
+    public class AddPartInfoForm:ComponentBase
     {
         internal LabelAlign formAlign;
         [Inject]
         Blazui.Component.MessageBox MessageBox { get; set; }
 
-        protected BForm addEngForm;
+        protected BForm addPartInfoForm;
         protected void Submit()
         {
-            if (!addEngForm.IsValid())
+            if (!addPartInfoForm.IsValid())
             {
-                return;   
+                return;
             }
 
-            var engineer = addEngForm.GetValue<Engineer>();
-            _ = MessageBox.AlertAsync(engineer.ToString());
-            SqlServerCtl.AddEngineer(engineer);
+            var sparePart = addPartInfoForm.GetValue<SparePart>();
+            
+            _ = MessageBox.AlertAsync(sparePart.ToString());
+            SqlServerCtl.AddPartInfo(sparePart);
         }
+
 
         protected void Reset()
         {
-            addEngForm.Reset();
+            addPartInfoForm.Reset();
         }
     }
 }

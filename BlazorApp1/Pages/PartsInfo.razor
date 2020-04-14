@@ -1,13 +1,187 @@
 ﻿@page "/partsInfo"
 @using BlazorApp1
 @using Blazui
-<h3>备件信息</h3>
-<p>
-    <BInput Value ="123">
+@using Models
+@using Data
+@using Pages
+@inherits AddPartInfoForm
 
-    </BInput>
-</p>
+<head>
+    <link rel="stylesheet" type="text/css" href="~/css/bootstrap/bootstrap.min.css" />
+
+</head>
+
+<BTab Type="@TabType.Card" @ref="tab">
+    <BTabPanel Title="备件信息查询">
+        <div class="card-deck">
+            <div class="card text-center">
+                <h5 class="card-header">
+                    中/英文描述/规格型
+                </h5>
+                <div class="input-group card-body">
+                    <input type="text" class="form-control" placeholder="在此输入备件的中文描述、英文描述或规格型" @bind-value="keywords">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" @onclick="SearchOnDescription">查询</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card text-center">
+                <h5 class="card-header">
+                    物料号
+                </h5>
+                <div class="input-group  card-body">
+                    <input type="text" class="form-control" placeholder="在此输入备件的物料号">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button">查询</button>
+                        <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#">SVW物料号</a>
+                            <a class="dropdown-item" href="#">DC物料号</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (SparePartList != null)
+        {
+            @if (SparePartList.Count != 0)
+            {
+                <div class=" card text-center" style="margin-top:15px">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped" data-show-header="true">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>SVW备件号</th>
+                                    <th>DC备件号</th>
+                                    <th>中/英文描述/备件规格</th>
+                                    <th>备件制造商</th>
+                                    <th>产地</th>
+                                    <th>物料属性</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var partInfo in SparePartList)
+                                {
+                                    <tr @onclick="e=>ClickItem(partInfo)">
+                                        <td>@partInfo.SVWNumber</td>
+                                        <td>@partInfo.DCNumber</td>
+                                        <td>@partInfo.Description</td>
+                                        <td>@partInfo.PartProducer</td>
+                                        <td>@partInfo.ProducingArea</td>
+                                        <td>@partInfo.PartProperty</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+             }
+         }
+
+    </BTabPanel>
+    <BTabPanel Title="制造商大全"></BTabPanel>
+    <BTabPanel Title="备件信息添加">
+        <BForm  @ref="addPartInfoForm" Inline="true">
+            <BFormItem TValue="string" Name="@nameof(Models.SparePart.DCNumber)" Label="DC物料号" IsRequired="true">
+                <BInput TValue="string"></BInput>
+            </BFormItem>
+            <BFormItem TValue="string" Name="@nameof(Models.SparePart.SVWNumber)" Label="SVW物料号" IsRequired="true">
+                <BInput TValue="string"></BInput>
+            </BFormItem>
+            <BFormItem TValue="string" Name="@nameof(Models.SparePart.Description)" Label="中/英文描述/规格型" IsRequired="true">
+                <BInput TValue="string"></BInput>
+            </BFormItem>
+            <BFormItem TValue="string" Name="@nameof(Models.SparePart.DeviceProducer)" Label="设备制造商">
+                <BInput TValue="string"></BInput>
+            </BFormItem>
+            <BFormItem TValue="string" Name="@nameof(Models.SparePart.PartProducer)" Label="备件制造商" IsRequired="true">
+                <BInput TValue="string"></BInput>
+            </BFormItem>
+            <BFormItem TValue="string" Name="@nameof(Models.SparePart.MachineNumber)" Label="机器号（设备编号）">
+                <BInput TValue="string"></BInput>  
+            </BFormItem>
+            <BFormItem TValue="string" Name="@nameof(Models.SparePart.MapNumber)" Label="图号">
+                <BInput TValue="string"></BInput>
+            </BFormItem>
+            <BFormItem TValue="Models.SparePart.partUnit" Name="@nameof(Models.SparePart.CountUnit)" Label="计量单位" IsRequired="true">
+                <BSelect TValue="Models.SparePart.partUnit">
+                </BSelect>
+            </BFormItem>
+            <BFormItem TValue="Models.SparePart.ABCnumber" Name="@nameof(Models.SparePart.ABCNumber)" Label="ABC码" IsRequired="true">
+                <BSelect TValue="Models.SparePart.ABCnumber">
+                </BSelect>
+            </BFormItem>
+            <BFormItem TValue="string" Name="@nameof(Models.SparePart.PlannerNumber)" Label="计划员码" IsRequired="true">
+                <BInput TValue="string"></BInput>
+            </BFormItem>
+            <BFormItem TValue="double" Name="@nameof(Models.SparePart.price)" Label="价格" IsRequired="true">
+                <BInput TValue="double"></BInput>
+            </BFormItem>
+            <BFormItem TValue="int" Name="@nameof(Models.SparePart.MinSafetyStock)" Label="最小安全库存" IsRequired="true">
+                <BInput TValue="int"></BInput>
+            </BFormItem>
+            <BFormItem TValue="int" Name="@nameof(Models.SparePart.MaxSafetyStock)" Label="最大安全库存" IsRequired="true">
+                <BInput TValue="int"></BInput>
+            </BFormItem>
+            <BFormItem TValue="int" Name="@nameof(Models.SparePart.OrderCycle)" Label="采购周期" IsRequired="true">
+                <BInput TValue="int"></BInput>
+            </BFormItem>
+            <BFormItem TValue="string" Name="@nameof(Models.SparePart.PartProperty)" Label="物料属性" IsRequired="true">
+                <BInput TValue="string"></BInput>
+            </BFormItem>
+            <BFormItem TValue="bool" Name="@nameof(Models.SparePart.IsSafety)" Label="是否有物料安全标识？" IsRequired="true">
+                <BRadioGroup TValue="bool">
+                    <BRadioButton Value="true">是</BRadioButton>
+                    <BRadioButton Value="false">否</BRadioButton>
+                </BRadioGroup>
+            </BFormItem>
+            <BFormItem TValue="Models.SparePart.producingArea" Name="@nameof(Models.SparePart.ProducingArea)" Label="产地" IsRequired="true">               
+                <BSelect TValue="Models.SparePart.producingArea">
+                </BSelect>
+            </BFormItem>
+            <BFormActionItem>
+                <BButton Type="@ButtonType.Primary" OnClick="e=>Submit()">立即添加</BButton>
+                <BButton OnClick="e=>Reset()">重置</BButton>
+            </BFormActionItem>
+        </BForm>
+    </BTabPanel>
+</BTab>
 
 @code {
+    string keywords;
+    BTab tab;
+    private IList<Models.SparePart> SparePartList;
 
+    [Inject]
+    DialogService DialogService { get; set; }
+    [Inject]
+    MessageService Message { get; set; }
+    private async Task SearchOnDescription()
+    {
+        await Task.Factory.StartNew(() =>
+        {
+            SparePartList = SqlServerCtl.SearchParts(keywords);
+            if (SparePartList.Count != 0){
+                Message.Show("共搜索到" + SparePartList.Count + "条符合条件的记录",MessageType.Success);
+            }
+            else
+            {
+                Message.Show("没有符合条件的记录", MessageType.Warning);
+            }
+
+            tab.MarkAsRequireRender();
+        });
+    }
+    private void ClickItem(SparePart partInfo)
+    {
+        var parameters = new Dictionary<string, object>();
+        parameters.Add("partInfo", partInfo);
+        var result = DialogService.ShowDialogAsync<PartInfoDetail>("备件详细信息", parameters);
+
+        tab.MarkAsRequireRender();
+    }
 }

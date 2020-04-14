@@ -1,10 +1,30 @@
 ﻿@page "/engineer"
 @using Models
+@using Data
 @inherits AddEngineerForm
 
 <BTab>
-    <BTabPanel Title="工程师一览">
-        工程师一览
+    <BTabPanel Title="在职工程师">
+        <div class="card-columns">
+            @foreach (var engineer in OnEngineers)
+            {
+                <div class="card text-center border-primary">
+                                       
+                    <h5 class="card-header">@engineer.Name</h5>
+                    <ul class="card-body">
+                        <li>
+                            ID：@engineer.ID
+                        </li>
+                        <li>
+                            车间：@engineer.Workshop
+                        </li>
+                        <li>
+                            组别：@engineer.Group
+                        </li>
+                    </ul>
+                </div>
+             }
+        </div>       
     </BTabPanel>
 
     <BTabPanel Title="添加工程师">
@@ -29,8 +49,32 @@
             </BFormActionItem>
         </BForm>
     </BTabPanel>
+
+    <BTabPanel Title="离职工程师">
+        @foreach (var engineer in OffEngineers)
+                        {
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    @engineer.Name
+                </div>
+                <ul class="panel-body">
+                    <li>
+                        ID：@engineer.ID
+                    </li>
+                    <li>
+                        车间：@engineer.Workshop
+                    </li>
+                    <li>
+                        组别：@engineer.Group
+                    </li>
+                </ul>
+            </div>
+        }
+    </BTabPanel>
 </BTab>
 
 @code {
-
+    private IList<Models.Engineer> OnEngineers = SqlServerCtl.ListEngineer(true);
+    private IList<Models.Engineer> OffEngineers = SqlServerCtl.ListEngineer(false);
 }
+  
