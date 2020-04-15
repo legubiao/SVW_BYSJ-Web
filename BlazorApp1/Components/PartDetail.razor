@@ -1,0 +1,25 @@
+﻿@using Models
+    <BSListGroup IsFlush="true">
+        <BSListGroupItem>备件描述: @partInfo.Description</BSListGroupItem>
+        <BSListGroupItem>DC物料号: @partInfo.DCNumber</BSListGroupItem>
+        <BSListGroupItem>SVW物料号: @partInfo.SVWNumber</BSListGroupItem>
+        <BSListGroupItem>物料生成日期: @partInfo.CreatDate</BSListGroupItem>
+        <BSListGroupItem>设备制造商: @partInfo.DeviceProducer</BSListGroupItem>
+        <BSListGroupItem>备件制造商: @partInfo.PartProducer</BSListGroupItem>
+        <BSListGroupItem>机器号: @partInfo.MachineNumber</BSListGroupItem>
+        <BSListGroupItem>图号: @partInfo.MapNumber</BSListGroupItem>
+        <BSListGroupItem>计量单位: @partInfo.CountUnit</BSListGroupItem>
+        <BSListGroupItem>ABC码: @partInfo.ABCNumber</BSListGroupItem>
+        <BSListGroupItem>计划员码: @partInfo.PlannerNumber</BSListGroupItem>
+        <BSListGroupItem>最小安全库存: @partInfo.MinSafetyStock</BSListGroupItem>
+        <BSListGroupItem>最大安全库存: @partInfo.MaxSafetyStock</BSListGroupItem>
+        <BSListGroupItem>采购周期: @partInfo.OrderCycle</BSListGroupItem>
+        <BSListGroupItem>物料属性: @partInfo.PartProperty</BSListGroupItem>
+        <BSListGroupItem>是否有物料安全标识: @partInfo.IsSafety</BSListGroupItem>
+        <BSListGroupItem>产地: @partInfo.ProducingArea</BSListGroupItem>
+    </BSListGroup>
+
+@code {
+    [Parameter]
+    public SparePart partInfo { get; set; }
+}

@@ -15,7 +15,7 @@ namespace BlazorApp1.Models
 
         public override string ToString()
         {
-            return $"ID：{ID}， 姓名：{Name}，车间：{Workshop}，组别：{Group}";
+            return $"ID：{ID}， 姓名：{Name}，车间：{Workshop}，工厂：{Group}";
         }
 
         public enum workshop

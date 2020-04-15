@@ -1,0 +1,58 @@
+﻿@using Models
+@using Data 
+
+<div class=" card text-center" style="margin-top:15px">
+    <div class="table-responsive">
+        <table class="table table-hover table-striped" data-show-header="true">
+            <thead class="thead-light">
+                <tr>
+                    <th>维修单号</th>
+                    <th>工位</th>
+                    <th>故障类型</th>
+                    <th>故障内容</th>
+                    <th>维修责任人</th>
+                    <th>使用物料</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var repairRecord in unfinishedRecords)
+                {
+                    <tr @onclick="e=>ClickItem(repairRecord)">
+                        <td>@repairRecord.orderNumber</td>
+                        <td>@repairRecord.Station</td>
+                        <td>@repairRecord.FailureMode</td>
+                        <td>@repairRecord.FailureDetail</td>
+                        <td>@repairRecord.RepairPeople</td>
+                        <td>@repairRecord.SVWNumber</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<BSModal @ref="RecordDetailModal">
+    <BSModalHeader OnClick="@(() =>RecordDetailModal.Hide())">备件详细信息</BSModalHeader>
+    <BSModalBody>
+        @if(selectedRecord != null)
+        {
+            <RecordDetail record = "selectedRecord" />
+        }
+    </BSModalBody>
+    <BSModalFooter>
+        <BSButton Color="Color.Secondary" @onclick="@(() => RecordDetailModal.Hide())">修改信息</BSButton>
+        <BSButton Color="Color.Danger" @onclick="@(() => RecordDetailModal.Hide())">删除备件</BSButton>
+    </BSModalFooter>
+</BSModal>
+
+@code {
+    BSModal RecordDetailModal;
+    private IList<Models.repairRecord> unfinishedRecords = SqlServerCtl.ListRepairRecord(false);
+    repairRecord selectedRecord;
+
+    private void ClickItem(repairRecord record)
+    {
+        selectedRecord = record;
+        RecordDetailModal.Show();
+    }
+}

@@ -1,0 +1,36 @@
+﻿@using Models
+    <BSListGroup IsFlush="true">
+        <BSListGroupItem>维修单号：@record.orderNumber</BSListGroupItem>
+        <BSListGroupItem>维护日期：@record.maintainTime</BSListGroupItem>
+        <BSListGroupItem>工厂：@record.Group</BSListGroupItem>
+        <BSListGroupItem>车间：@record.Workshop</BSListGroupItem>
+        <BSListGroupItem>区域：@record.Area</BSListGroupItem>
+        <BSListGroupItem>工位：@record.Station</BSListGroupItem>
+        <BSListGroupItem>故障类型：@record.FailureMode</BSListGroupItem>
+        <BSListGroupItem>故障内容：@record.FailureDetail</BSListGroupItem>
+        <BSListGroupItem>修理措施：@record.RepairMeasures</BSListGroupItem>
+        <BSListGroupItem>长期措施：@record.LongtimeMeasures</BSListGroupItem>
+        <BSListGroupItem>故障修理时间：@record.MaintanenceTime</BSListGroupItem>
+        <BSListGroupItem>维修责任人：@record.RepairPeople</BSListGroupItem>
+        <BSListGroupItem>保养责任人：@record.MaintanencePeople</BSListGroupItem>
+        <BSListGroupItem>影响主线时间：@record.ShutdownTime</BSListGroupItem>
+        <BSListGroupItem>填写人：@record.writtenby</BSListGroupItem>
+        <BSListGroupItem>填写时间：@record.writtenTime</BSListGroupItem>
+        @if (record.SVWNumber != null)
+        {
+            <BSListGroupItem>没有使用备件或返修件</BSListGroupItem>
+        }
+        else
+        {
+            <BSListGroupItem>SVW物料号：@record.SVWNumber</BSListGroupItem>
+            <BSListGroupItem>备件消耗数量：@record.SparePartNo</BSListGroupItem>
+            <BSListGroupItem>返修件消耗数量：@record.ReworkNo</BSListGroupItem>
+        }
+        <BSListGroupItem>故障单完成情况：@record.isFinished</BSListGroupItem>
+        <BSListGroupItem>备注：@record.remark</BSListGroupItem>
+    </BSListGroup>
+
+@code {
+    [Parameter]
+    public repairRecord record { get; set; }
+}
