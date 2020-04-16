@@ -1,8 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <UserSecretsId>aspnet-BlazorApp1-B4890340-5462-4316-8746-5EC58790746F</UserSecretsId>
+    <UserSecretsId>aspnet-SVW_BYSJ_WEB-B4890340-5462-4316-8746-5EC58790746F</UserSecretsId>
+    <AssemblyName>SVW_BYSJ_WEB</AssemblyName>
+    <RootNamespace>SVW_BYSJ_WEB</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

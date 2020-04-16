@@ -1,13 +1,13 @@
-﻿using BlazorApp1.Models;
+﻿using SVW_BYSJ_WEB.Models;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static BlazorApp1.Models.Engineer;
-using static BlazorApp1.Models.SparePart;
+using static SVW_BYSJ_WEB.Models.Engineer;
+using static SVW_BYSJ_WEB.Models.SparePart;
 
-namespace BlazorApp1.Data
+namespace SVW_BYSJ_WEB.Data
 {  
     public static class SqlServerCtl
     {

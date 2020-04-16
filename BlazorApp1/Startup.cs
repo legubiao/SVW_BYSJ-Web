@@ -13,11 +13,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using BlazorApp1.Areas.Identity;
-using BlazorApp1.Data;
+using SVW_BYSJ_WEB.Areas.Identity;
+using SVW_BYSJ_WEB.Data;
 using Blazui.Component;
 
-namespace BlazorApp1
+namespace SVW_BYSJ_WEB
 {
     public class Startup
     {

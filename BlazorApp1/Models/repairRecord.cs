@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static BlazorApp1.Models.Engineer;
+using static SVW_BYSJ_WEB.Models.Engineer;
 
-namespace BlazorApp1.Models
+namespace SVW_BYSJ_WEB.Models
 {
     public class repairRecord
     {

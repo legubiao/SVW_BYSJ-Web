@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BlazorApp1.Models
+namespace SVW_BYSJ_WEB.Models
 {
     public class Engineer
     {

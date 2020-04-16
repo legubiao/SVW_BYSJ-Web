@@ -1,6 +1,6 @@
 using System;
 
-namespace BlazorApp1.Data
+namespace SVW_BYSJ_WEB.Data
 {
     public class WeatherForecast
     {
