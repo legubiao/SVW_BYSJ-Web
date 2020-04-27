@@ -3,8 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>aspnet-SVW_BYSJ_WEB-B4890340-5462-4316-8746-5EC58790746F</UserSecretsId>
-    <AssemblyName>SVW_BYSJ_WEB</AssemblyName>
+    <AssemblyName>SVW备件管理系统（学生毕设模型）</AssemblyName>
     <RootNamespace>SVW_BYSJ_WEB</RootNamespace>
+    <Copyright></Copyright>
   </PropertyGroup>
 
   <ItemGroup>

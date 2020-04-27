@@ -41,7 +41,6 @@ namespace SVW_BYSJ_WEB
             services.AddServerSideBlazor();
             services.AddBlazuiServices();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-            services.AddSingleton<WeatherForecastService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
