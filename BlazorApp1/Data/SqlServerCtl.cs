@@ -105,6 +105,38 @@ namespace SVW_BYSJ_WEB.Data
             string command = "Delete from 备件信息表 where SVW物料号 = '" + SVWNumber + "'";
             ManipulateData(command);
         }
+        //修改备件的部分数据
+        public static void UpdatePartInfo(SparePart sparePart)
+        {
+            string command = "UPDATE 备件信息表 SET [中/英文描述/规格型] = '" + sparePart.Description+
+                "',设备制造商='"+sparePart.DeviceProducer+
+                "',备件制造商='"+sparePart.PartProducer+
+                "',[设备编号（机器号）]='" + sparePart.MachineNumber+
+                "',图号='"+sparePart.MapNumber+
+                "',计划员码='" + sparePart.PlannerNumber +
+                "',参考单价='" + sparePart.price +
+                "',最小安全库存='" + sparePart.MinSafetyStock +
+                "',最大安全库存='" + sparePart.MaxSafetyStock +
+                "',采购周期='" + sparePart.OrderCycle +
+                "',物料属性='" + sparePart.PartProperty +
+                "' WHERE SVW物料号 = '" + sparePart.SVWNumber + "'";
+            ManipulateData(command);
+        }
+        //切换备件的安全或不安全状态
+        public static void SwitchPartSafety(SparePart sparePart)
+        {
+            string command;
+            if (sparePart.IsSafety)
+            {
+                command = "UPDATE 备件信息表 SET 物料安全标识 = 'False' WHERE SVW物料号 = '" + sparePart.SVWNumber + "'";
+            }
+            else
+            {
+                command = "UPDATE 备件信息表 SET 物料安全标识 = 'True' WHERE SVW物料号 = '" + sparePart.SVWNumber + "'";
+            }
+            ManipulateData(command);
+        }
+
 
         //列出维修单
         public static IList<repairRecord> ListRepairRecord(bool isOn)

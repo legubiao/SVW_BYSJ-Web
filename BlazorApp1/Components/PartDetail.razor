@@ -1,21 +1,55 @@
 ﻿@using Models
     <BSListGroup IsFlush="true">
-        <BSListGroupItem>备件描述: @partInfo.Description</BSListGroupItem>
-        <BSListGroupItem>DC物料号: @partInfo.DCNumber</BSListGroupItem>
-        <BSListGroupItem>SVW物料号: @partInfo.SVWNumber</BSListGroupItem>
         <BSListGroupItem>物料生成日期: @partInfo.CreatDate</BSListGroupItem>
-        <BSListGroupItem>设备制造商: @partInfo.DeviceProducer</BSListGroupItem>
-        <BSListGroupItem>备件制造商: @partInfo.PartProducer</BSListGroupItem>
-        <BSListGroupItem>机器号: @partInfo.MachineNumber</BSListGroupItem>
-        <BSListGroupItem>图号: @partInfo.MapNumber</BSListGroupItem>
-        <BSListGroupItem>计量单位: @partInfo.CountUnit</BSListGroupItem>
-        <BSListGroupItem>ABC码: @partInfo.ABCNumber</BSListGroupItem>
-        <BSListGroupItem>计划员码: @partInfo.PlannerNumber</BSListGroupItem>
-        <BSListGroupItem>最小安全库存: @partInfo.MinSafetyStock</BSListGroupItem>
-        <BSListGroupItem>最大安全库存: @partInfo.MaxSafetyStock</BSListGroupItem>
-        <BSListGroupItem>采购周期: @partInfo.OrderCycle</BSListGroupItem>
+        <BSListGroupItem>
+            <BSRow>
+                <BSCol XS="6">DC物料号: @partInfo.DCNumber</BSCol>
+                <BSCol XS="6">SVW物料号: @partInfo.SVWNumber</BSCol>
+            </BSRow>
+        </BSListGroupItem>
+        <BSListGroupItem>
+            <BSRow>
+                <BSCol XS="3">备件制造商</BSCol>
+                <BSCol XS="9">@partInfo.PartProducer</BSCol>
+            </BSRow>
+            <BSRow>
+                <BSCol XS="3">设备制造商</BSCol>
+                <BSCol XS="9">@partInfo.DeviceProducer</BSCol>
+            </BSRow>
+        </BSListGroupItem>
+        <BSListGroupItem>
+            <BSRow>
+                <BSCol XS="6">机器号: @partInfo.MachineNumber</BSCol>
+                <BSCol XS="6">图号: @partInfo.MapNumber</BSCol>
+            </BSRow>
+        </BSListGroupItem>
+        <BSListGroupItem>
+            <BSRow>
+                <BSCol XS="4">计量单位: @partInfo.CountUnit</BSCol>
+                <BSCol XS="4">ABC码: @partInfo.ABCNumber</BSCol>
+                <BSCol XS="4">计划员码: @partInfo.PlannerNumber</BSCol>
+            </BSRow>
+        </BSListGroupItem>
+        <BSListGroupItem>
+            <BSRow>
+                <BSCol XS="4">最小安全库存: @partInfo.MinSafetyStock</BSCol>
+                <BSCol XS="4">最大安全库存: @partInfo.MaxSafetyStock</BSCol>
+                <BSCol XS="4">采购周期: @partInfo.OrderCycle</BSCol>
+            </BSRow>
+        </BSListGroupItem>
         <BSListGroupItem>物料属性: @partInfo.PartProperty</BSListGroupItem>
-        <BSListGroupItem>是否有物料安全标识: @partInfo.IsSafety</BSListGroupItem>
+        @if (partInfo.IsSafety)
+        {
+            <BSListGroupItem Color="Color.Success">
+                物料已经具有安全标识
+            </BSListGroupItem>
+        }
+        else
+        {
+            <BSListGroupItem Color="Color.Danger">
+                物料缺少安全标识
+            </BSListGroupItem>
+        }
         <BSListGroupItem>产地: @partInfo.ProducingArea</BSListGroupItem>
     </BSListGroup>
 

@@ -1,0 +1,147 @@
+﻿@using Data
+@using Models;
+   
+
+    <BSModal @ref="PartModifyModal">
+        @if (partInfo != null)
+        {
+            <BSModalHeader OnClick="@(() => PartModifyModal.Hide())">修改备件 @partInfo.SVWNumber</BSModalHeader>
+            <BSModalBody>
+                <BSListGroup IsFlush="true">
+                    <BSListGroupItem>
+                        <BSRow>
+                            <BSCol XS="6">ABC码: @partInfo.ABCNumber</BSCol>
+                            <BSCol XS="6">计量单位: @partInfo.CountUnit</BSCol>
+                        </BSRow>
+                        <BSRow>
+                            <BSCol XS="3">产地: @partInfo.ProducingArea</BSCol>
+                            <BSCol XS="9">物料生成日期: @partInfo.CreatDate</BSCol>
+                        </BSRow>
+                    </BSListGroupItem>
+                </BSListGroup>
+                <BForm @ref="addPartInfoForm" Style="margin-top=5px">
+                    <BFormItem TValue="string" Name="@nameof(Models.SparePart.Description)" Label="描述与规格">
+                        <BSBasicInput InputType="BlazorStrap.InputType.TextArea" Rows="2" Value="@partInfo.Description" />
+                    </BFormItem>
+                    <BFormItem TValue="string" Name="@nameof(Models.SparePart.DeviceProducer)" Label="设备制造商">
+                        <BInput TValue="string" Value="@partInfo.DeviceProducer" />
+                    </BFormItem>
+                    <BFormItem TValue="string" Name="@nameof(Models.SparePart.PartProducer)" Label="备件制造商">
+                        <BInput TValue="string" Value="@partInfo.PartProducer"></BInput>
+                    </BFormItem>
+                    <BFormItem TValue="string" Name="@nameof(Models.SparePart.MachineNumber)" Label="机器号">
+                        <BInput TValue="string" Value="@partInfo.MachineNumber"></BInput>
+                    </BFormItem>
+                    <BFormItem TValue="string" Name="@nameof(Models.SparePart.MapNumber)" Label="图号">
+                        <BInput TValue="string" Value="@partInfo.MapNumber"></BInput>
+                    </BFormItem>
+                    <BFormItem TValue="string" Name="@nameof(Models.SparePart.PlannerNumber)" Label="计划员码">
+                        <BInput TValue="string" Value="@partInfo.PlannerNumber"></BInput>
+                    </BFormItem>
+                    <BFormItem TValue="double" Name="@nameof(Models.SparePart.price)" Label="价格">
+                        <BInput TValue="double" Value="@partInfo.price"></BInput>
+                    </BFormItem>
+                    <BFormItem TValue="int" Name="@nameof(Models.SparePart.MinSafetyStock)" Label="最小安全库存">
+                        <BInput TValue="int" Value="@partInfo.MinSafetyStock"></BInput>
+                    </BFormItem>
+                    <BFormItem TValue="int" Name="@nameof(Models.SparePart.MaxSafetyStock)" Label="最大安全库存">
+                        <BInput TValue="int" Value="@partInfo.MaxSafetyStock"></BInput>
+                    </BFormItem>
+                    <BFormItem TValue="int" Name="@nameof(Models.SparePart.OrderCycle)" Label="采购周期">
+                        <BInput TValue="int" Value="@partInfo.OrderCycle"></BInput>
+                    </BFormItem>
+                    <BFormItem TValue="string" Name="@nameof(Models.SparePart.PartProperty)" Label="物料属性">
+                        <BInput TValue="string" Value="@partInfo.PartProperty"></BInput>
+                    </BFormItem>
+                </BForm>
+            </BSModalBody>
+            <BSModalFooter>
+                @if (partInfo.IsSafety)
+                {
+                    <BSButton Color="Color.Danger" @onclick="@(() => ConfirmModal2.Show())">标记为不安全</BSButton>
+                }
+                else
+                {
+                    <BSButton Color="Color.Success" @onclick="@(() => ConfirmModal2.Show())">标记为安全</BSButton>
+                }
+                <BSButton Color="Color.Primary" @onclick="@(() => ConfirmModal.Show())">确认修改</BSButton>
+                <BSButton Color="Color.Secondary" @onclick="@(() => PartModifyModal.Hide())">放弃修改</BSButton>
+            </BSModalFooter>
+        }
+
+    </BSModal>
+
+    <BSModal @ref="ConfirmModal" IsCentered="true">
+        <BSModalHeader OnClick="@(() => ConfirmModal.Hide())">警告</BSModalHeader>
+        <BSModalBody>
+            <p>是否修改备件信息？</p>
+        </BSModalBody>
+        <BSModalFooter>
+            <BSButton Color="Color.Success" @onclick="@(e => Submit())">修改</BSButton>
+            <BSButton Color="Color.Secondary" @onclick="@(() => ConfirmModal.Hide())">返回</BSButton>
+        </BSModalFooter>
+    </BSModal>
+    <BSModal @ref="ConfirmModal2" IsCentered="true">
+        <BSModalHeader OnClick="@(() => ConfirmModal2.Hide())">警告</BSModalHeader>
+        <BSModalBody>
+            <p>是否修改备件安全标识？</p>
+        </BSModalBody>
+        <BSModalFooter>
+            <BSButton Color="Color.Primary" @onclick="@(e => SwitchSafety())">修改</BSButton>
+            <BSButton Color="Color.Secondary" @onclick="@(() => ConfirmModal2.Hide())">返回</BSButton>
+        </BSModalFooter>
+    </BSModal>
+
+@code {
+    [Parameter]
+    public SparePart partInfo { get; set; }
+    [Parameter]
+    public BSModal detailModal { get; set; }
+
+    BSModal PartModifyModal;
+    BSModal ConfirmModal;
+    BSModal ConfirmModal2;
+    protected BForm addPartInfoForm;
+    [Inject]
+    Blazui.Component.MessageBox MessageBox { get; set; }
+    protected void Submit()
+    {
+        if (!addPartInfoForm.IsValid())
+        {
+            return;
+        }
+
+        var sparePart = addPartInfoForm.GetValue<SparePart>();
+        sparePart.SVWNumber = partInfo.SVWNumber;
+        SqlServerCtl.UpdatePartInfo(sparePart);
+        string message = "备件" + partInfo.SVWNumber + "信息修改成功! 请重新搜索以刷新结果列表";
+        _ = MessageBox.AlertAsync(message);
+        PartModifyCLose();
+    }
+    protected void SwitchSafety()
+    {
+        SqlServerCtl.SwitchPartSafety(partInfo);
+        string message = "备件" + partInfo.SVWNumber + "安全标识修改成功! 请重新搜索以刷新结果列表";
+        _ = MessageBox.AlertAsync(message);
+        PartModifyCLose();
+    }
+    public void PartModifyCLose()
+    {
+        PartModifyModal.Hide();
+        ConfirmModal.Hide();
+        ConfirmModal2.Hide();
+        detailModal.Hide();
+    }
+    public void Show()
+    {
+        PartModifyModal.Show();
+    }
+
+
+    protected void Reset()
+    {
+        addPartInfoForm.Reset();
+    }
+
+
+}

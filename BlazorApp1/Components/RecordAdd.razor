@@ -1,0 +1,21 @@
+﻿@using Models
+<BSListGroup IsFlush="true">
+    <BSListGroupItem>
+        <BSRow>
+            <BSCol XS="3">工厂</BSCol>
+            <BSCol XS="9">
+                <BSBasicInput InputType="BlazorStrap.InputType.Text" IsPlaintext="true" @bind-Value="record.Group"/>
+            </BSCol>
+        </BSRow>
+    </BSListGroupItem>
+</BSListGroup>
+<BSButton Color="Color.Danger" @onclick="@(() => Click())">测试</BSButton>
+@code {
+    public repairRecord record = new repairRecord();
+    [Inject]
+    Blazui.Component.MessageBox MessageBox { get; set; }
+    protected void Click()
+    {
+        _ = MessageBox.AlertAsync(record.Group.ToString());
+    }
+}

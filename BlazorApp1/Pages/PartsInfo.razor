@@ -5,79 +5,24 @@
 @using Data
 @using Pages
 @using SVW_BYSJ_WEB.Components
-@inherits AddPartInfoForm
 
-<BTab Type="@TabType.Card">
-    <BTabPanel Title="备件信息查询">
-        <SparePartSearch />
-    </BTabPanel>
-    <BTabPanel Title="制造商大全"></BTabPanel>
-    <BTabPanel Title="备件信息添加">
-        <BForm @ref="addPartInfoForm" Inline="true">
-            <BFormItem TValue="string" Name="@nameof(Models.SparePart.DCNumber)" Label="DC物料号" IsRequired="true">
-                <BInput TValue="string"></BInput>
-            </BFormItem>
-            <BFormItem TValue="string" Name="@nameof(Models.SparePart.SVWNumber)" Label="SVW物料号" IsRequired="true">
-                <BInput TValue="string"></BInput>
-            </BFormItem>
-            <BFormItem TValue="string" Name="@nameof(Models.SparePart.Description)" Label="中/英文描述/规格型" IsRequired="true">
-                <BInput TValue="string"></BInput>
-            </BFormItem>
-            <BFormItem TValue="string" Name="@nameof(Models.SparePart.DeviceProducer)" Label="设备制造商">
-                <BInput TValue="string"></BInput>
-            </BFormItem>
-            <BFormItem TValue="string" Name="@nameof(Models.SparePart.PartProducer)" Label="备件制造商" IsRequired="true">
-                <BInput TValue="string"></BInput>
-            </BFormItem>
-            <BFormItem TValue="string" Name="@nameof(Models.SparePart.MachineNumber)" Label="机器号（设备编号）">
-                <BInput TValue="string"></BInput>
-            </BFormItem>
-            <BFormItem TValue="string" Name="@nameof(Models.SparePart.MapNumber)" Label="图号">
-                <BInput TValue="string"></BInput>
-            </BFormItem>
-            <BFormItem TValue="Models.SparePart.partUnit" Name="@nameof(Models.SparePart.CountUnit)" Label="计量单位" IsRequired="true">
-                <BSelect TValue="Models.SparePart.partUnit">
-                </BSelect>
-            </BFormItem>
-            <BFormItem TValue="Models.SparePart.ABCnumber" Name="@nameof(Models.SparePart.ABCNumber)" Label="ABC码" IsRequired="true">
-                <BSelect TValue="Models.SparePart.ABCnumber">
-                </BSelect>
-            </BFormItem>
-            <BFormItem TValue="string" Name="@nameof(Models.SparePart.PlannerNumber)" Label="计划员码" IsRequired="true">
-                <BInput TValue="string"></BInput>
-            </BFormItem>
-            <BFormItem TValue="double" Name="@nameof(Models.SparePart.price)" Label="价格" IsRequired="true">
-                <BInput TValue="double"></BInput>
-            </BFormItem>
-            <BFormItem TValue="int" Name="@nameof(Models.SparePart.MinSafetyStock)" Label="最小安全库存" IsRequired="true">
-                <BInput TValue="int"></BInput>
-            </BFormItem>
-            <BFormItem TValue="int" Name="@nameof(Models.SparePart.MaxSafetyStock)" Label="最大安全库存" IsRequired="true">
-                <BInput TValue="int"></BInput>
-            </BFormItem>
-            <BFormItem TValue="int" Name="@nameof(Models.SparePart.OrderCycle)" Label="采购周期" IsRequired="true">
-                <BInput TValue="int"></BInput>
-            </BFormItem>
-            <BFormItem TValue="string" Name="@nameof(Models.SparePart.PartProperty)" Label="物料属性" IsRequired="true">
-                <BInput TValue="string"></BInput>
-            </BFormItem>
-            <BFormItem TValue="bool" Name="@nameof(Models.SparePart.IsSafety)" Label="是否有物料安全标识？" IsRequired="true">
-                <BRadioGroup TValue="bool">
-                    <BRadioButton Value="true">是</BRadioButton>
-                    <BRadioButton Value="false">否</BRadioButton>
-                </BRadioGroup>
-            </BFormItem>
-            <BFormItem TValue="Models.SparePart.producingArea" Name="@nameof(Models.SparePart.ProducingArea)" Label="产地" IsRequired="true">
-                <BSelect TValue="Models.SparePart.producingArea">
-                </BSelect>
-            </BFormItem>
-            <BFormActionItem>
-                <BButton  OnClick="e=>Submit()">立即添加</BButton>
-                <BButton OnClick="e=>Reset()">重置</BButton>
-            </BFormActionItem>
-        </BForm>
-    </BTabPanel>
-</BTab>
+<BSTabGroup>
+    <BSTabList IsList="true">
+        <BSTab>
+            <BSTabLabel>备件信息查询</BSTabLabel>
+            <BSTabContent>
+                <PartInfoSearch />
+            </BSTabContent>
+        </BSTab>
+        <BSTab>
+            <BSTabLabel>备件信息添加</BSTabLabel>
+            <BSTabContent>
+                <PartInfoAdd />
+            </BSTabContent>
+        </BSTab>
+    </BSTabList>
+    <BSTabSelectedContent />
+</BSTabGroup>
 
 
 @code {

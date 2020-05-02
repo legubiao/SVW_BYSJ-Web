@@ -1,7 +1,7 @@
 ﻿@using Models
 @using Data
 
-<div class="card-deck">
+<div class="card-deck" style="margin-top:15px">
     <div class="card text-center">
         <h5 class="card-header">
             中/英文描述/规格型
@@ -71,18 +71,21 @@
 }
 
 <BSModal @ref="PartDetailModal">
-    <BSModalHeader OnClick="@(() => PartDetailModal.Hide())">备件详细信息</BSModalHeader>
-    <BSModalBody>
-        @if (selectedPart != null)
-        {
+    @if (selectedPart != null)
+    {
+        <BSModalHeader OnClick="@(() => PartDetailModal.Hide())">@selectedPart.Description</BSModalHeader>
+        <BSModalBody>
             <PartDetail partInfo="selectedPart" />
-        }
-    </BSModalBody>
-    <BSModalFooter>
-        <BSButton Color="Color.Secondary" @onclick="@(() => PartDetailModal.Hide())">修改信息</BSButton>
-        <BSButton Color="Color.Danger" @onclick="@(() => ConfirmDeleteModal.Show())">删除备件</BSButton>
-    </BSModalFooter>
+        </BSModalBody>
+    }
+<BSModalFooter>
+    <BSButton Color="Color.Primary" @onclick="@(() => PartDetailModal.Hide())">使用此备件创建维修单</BSButton>
+    <BSButton Color="Color.Secondary" @onclick="@(() => ModifyModal.Show())">修改信息</BSButton>
+    <BSButton Color="Color.Danger" @onclick="@(() => ConfirmDeleteModal.Show())">删除备件</BSButton>
+</BSModalFooter>
 </BSModal>
+
+<PartInfoModify partInfo="selectedPart" detailModal="PartDetailModal" @ref="ModifyModal" />
 
 <BSModal @ref="ConfirmDeleteModal" IsCentered="true">
     <BSModalHeader OnClick="@(() => ConfirmDeleteModal.Hide())">警告</BSModalHeader>
@@ -96,10 +99,12 @@
 </BSModal>
 
 
+
 @code {
     string keywords;
     BSModal PartDetailModal;
     BSModal ConfirmDeleteModal;
+    PartInfoModify ModifyModal;
     SparePart selectedPart;
     private IList<Models.SparePart> SparePartList;
     [Inject]

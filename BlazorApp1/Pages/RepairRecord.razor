@@ -1,14 +1,23 @@
 ﻿@page "/repairRecord"
 @using SVW_BYSJ_WEB.Components
-    <BTab Type="@TabType.Card">
-        <BTabPanel Title="未完成维修单">
-            <UnfinishedRecord />
-        </BTabPanel>
-        <BTabPanel Title="已完成维修单">
-            
-        </BTabPanel>
-    </BTab>
 
+    <BSTabGroup>
+        <BSTabList IsList="true" >
+            <BSTab>
+                <BSTabLabel>未完成维修单</BSTabLabel>
+                <BSTabContent>
+                    <UnfinishedRecord />
+                </BSTabContent>
+            </BSTab>
+            <BSTab>
+                <BSTabLabel>已完成维修单</BSTabLabel>
+                <BSTabContent>
+                    <RecordAdd />
+                </BSTabContent>
+            </BSTab>
+        </BSTabList>
+        <BSTabSelectedContent/>
+    </BSTabGroup>
 @code {
 
 }
