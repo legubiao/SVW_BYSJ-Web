@@ -31,21 +31,10 @@
     </div>
 </div>
 
-<BSModal @ref="RecordDetailModal">
-    @if (selectedRecord != null)
-    {
-        <BSModalHeader OnClick="@(() =>RecordDetailModal.Hide())">维修单号：@selectedRecord.orderNumber</BSModalHeader>
-        <BSModalBody><RecordDetail record="selectedRecord" /></BSModalBody>
-    }
-<BSModalFooter>
-    <BSButton Color="Color.Primary" @onclick="@(() => RecordDetailModal.Hide())">设置为已完成</BSButton>
-    <BSButton Color="Color.Secondary" @onclick="@(() => RecordDetailModal.Hide())">修改信息</BSButton>
-    <BSButton Color="Color.Danger" @onclick="@(() => RecordDetailModal.Hide())">删除备件</BSButton>
-</BSModalFooter>
-</BSModal>
+<RecordDetail record="selectedRecord" @ref="RecordDetailModal"/>
 
 @code {
-    BSModal RecordDetailModal;
+    RecordDetail RecordDetailModal;
     private IList<Models.repairRecord> unfinishedRecords = SqlServerCtl.ListRepairRecord(false);
     repairRecord selectedRecord;
 

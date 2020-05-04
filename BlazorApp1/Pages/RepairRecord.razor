@@ -1,23 +1,33 @@
 ﻿@page "/repairRecord"
 @using SVW_BYSJ_WEB.Components
 
-    <BSTabGroup>
-        <BSTabList IsList="true" >
-            <BSTab>
-                <BSTabLabel>未完成维修单</BSTabLabel>
-                <BSTabContent>
-                    <UnfinishedRecord />
-                </BSTabContent>
-            </BSTab>
-            <BSTab>
-                <BSTabLabel>已完成维修单</BSTabLabel>
-                <BSTabContent>
-                    <RecordAdd />
-                </BSTabContent>
-            </BSTab>
-        </BSTabList>
-        <BSTabSelectedContent/>
-    </BSTabGroup>
-@code {
 
+
+    <BSTabGroup>
+        <BSRow>
+            <BSCol XS="9">
+                <BSTabList IsList="true">
+                    <BSTab>
+                        <BSTabLabel>未完成维修单</BSTabLabel>
+                        <BSTabContent>
+                            <UnfinishedRecord />
+                        </BSTabContent>
+                    </BSTab>
+                    <BSTab>
+                        <BSTabLabel>已完成维修单</BSTabLabel>
+                        <BSTabContent>
+                            <RecordAdd />
+                        </BSTabContent>
+                    </BSTab>
+                </BSTabList>
+            </BSCol>
+            <BSCol XS="3" class="text-right">
+                <BSButton Color="Color.Primary" @onclick="@(e => addRecordModal.Show())">新维修单</BSButton>
+            </BSCol>
+        </BSRow>       
+        <BSTabSelectedContent />
+    </BSTabGroup>
+    <Part2Record @ref="addRecordModal"/>
+@code {
+    Part2Record addRecordModal;
 }

@@ -79,13 +79,15 @@
         </BSModalBody>
     }
 <BSModalFooter>
-    <BSButton Color="Color.Primary" @onclick="@(() => PartDetailModal.Hide())">使用此备件创建维修单</BSButton>
+    <BSButton Color="Color.Primary" @onclick="@(() => AddRecordModal.Show())">使用此备件创建维修单</BSButton>
     <BSButton Color="Color.Secondary" @onclick="@(() => ModifyModal.Show())">修改信息</BSButton>
     <BSButton Color="Color.Danger" @onclick="@(() => ConfirmDeleteModal.Show())">删除备件</BSButton>
 </BSModalFooter>
 </BSModal>
 
 <PartInfoModify partInfo="selectedPart" detailModal="PartDetailModal" @ref="ModifyModal" />
+<Part2Record partInfo="selectedPart" @ref="AddRecordModal"/>
+
 
 <BSModal @ref="ConfirmDeleteModal" IsCentered="true">
     <BSModalHeader OnClick="@(() => ConfirmDeleteModal.Hide())">警告</BSModalHeader>
@@ -105,6 +107,7 @@
     BSModal PartDetailModal;
     BSModal ConfirmDeleteModal;
     PartInfoModify ModifyModal;
+    Part2Record AddRecordModal;
     SparePart selectedPart;
     private IList<Models.SparePart> SparePartList;
     [Inject]

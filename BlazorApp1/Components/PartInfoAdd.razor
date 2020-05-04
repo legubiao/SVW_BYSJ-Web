@@ -28,16 +28,16 @@
             <BFormItem TValue="string" Name="@nameof(Models.SparePart.PlannerNumber)" Label="计划员码" IsRequired="true">
                 <BInput TValue="string"></BInput>
             </BFormItem>
-            <BFormItem TValue="Models.SparePart.ABCnumber" Name="@nameof(Models.SparePart.ABCNumber)" Label="ABC码" IsRequired="true">
-                <BSelect TValue="Models.SparePart.ABCnumber">
+            <BFormItem TValue="Models.ABCnumber" Name="@nameof(Models.SparePart.ABCNumber)" Label="ABC码" IsRequired="true">
+                <BSelect TValue="Models.ABCnumber">
                 </BSelect>
             </BFormItem>
-            <BFormItem TValue="Models.SparePart.partUnit" Name="@nameof(Models.SparePart.CountUnit)" Label="计量单位" IsRequired="true">
-                <BSelect TValue="Models.SparePart.partUnit">
+            <BFormItem TValue="Models.partUnit" Name="@nameof(Models.SparePart.CountUnit)" Label="计量单位" IsRequired="true">
+                <BSelect TValue="Models.partUnit">
                 </BSelect>
             </BFormItem>
-            <BFormItem TValue="Models.SparePart.producingArea" Name="@nameof(Models.SparePart.ProducingArea)" Label="产地" IsRequired="true">
-                <BSelect TValue="Models.SparePart.producingArea">
+            <BFormItem TValue="Models.producingArea" Name="@nameof(Models.SparePart.ProducingArea)" Label="产地" IsRequired="true">
+                <BSelect TValue="Models.producingArea">
                 </BSelect>
             </BFormItem>
             <BFormItem TValue="double" Name="@nameof(Models.SparePart.price)" Label="价格" IsRequired="true">
@@ -70,7 +70,6 @@
 </div>
 
 @code {
-    internal LabelAlign formAlign;
     [Inject]
     Blazui.Component.MessageBox MessageBox { get; set; }
 

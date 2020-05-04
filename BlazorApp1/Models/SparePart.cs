@@ -47,49 +47,48 @@ namespace SVW_BYSJ_WEB.Models
                 $"物料安全标识:{IsSafety}\n" +
                 $"产地:{ProducingArea}\n";
         }
+    }
+    public enum ABCnumber
+    {
+        A,
+        B,
+        C,
+        D,
 
-        public enum ABCnumber
-        {
-            A,
-            B,
-            C,
-            D,
+    }
+    public enum partUnit
+    {
+        PU, PC, BOT, ML, EA, TON, CAN, PAC, SET, M2, TO, L, G, CAR, BAG, DMR, CAS, PR, rol, KG, PD, CTN, M, GP
+    }
 
-        }
-        public enum partUnit
-        {
-            PU, PC, BOT, ML, EA, TON, CAN, PAC, SET, M2, TO, L, G, CAR, BAG, DMR, CAS, PR, rol, KG, PD, CTN, M, GP
-        }
-        
-        public enum partStatus
-        {
-            常,
-            重点,
-            E,
-            锁定,
-            停产,
-            富余,
-            呆滞
-        }
-        public enum partProperty
-        {
-            撑钩撑棒类,
-            国产定制备件,
-            防护类,
-            枪嘴类,
-            吊具夹具类,
-            机件,
-            塑件类,
-            擦拭类,
-            电极类,
-            包胶轮类,
-            工装类,
-            机加工件
-        }
-        public enum producingArea
-        {
-            国内,
-            国际
-        }
+    public enum partStatus
+    {
+        常,
+        重点,
+        E,
+        锁定,
+        停产,
+        富余,
+        呆滞
+    }
+    public enum partProperty
+    {
+        撑钩撑棒类,
+        国产定制备件,
+        防护类,
+        枪嘴类,
+        吊具夹具类,
+        机件,
+        塑件类,
+        擦拭类,
+        电极类,
+        包胶轮类,
+        工装类,
+        机加工件
+    }
+    public enum producingArea
+    {
+        国内,
+        国际
     }
 }

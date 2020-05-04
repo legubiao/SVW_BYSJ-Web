@@ -54,10 +54,8 @@ namespace SVW_BYSJ_WEB.Models
                 $"故障单完成情况:{isFinished}\n" +
                 $"备注:{remark}\n";
         }
+        
     }
-
-
-
     public enum failureMode
     {
         PLC故障,
@@ -72,4 +70,7 @@ namespace SVW_BYSJ_WEB.Models
         激光设备故障,
         焊接设备
     }
+
+
+
 }
