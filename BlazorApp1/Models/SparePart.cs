@@ -22,9 +22,14 @@ namespace SVW_BYSJ_WEB.Models
         public int MaxSafetyStock { get; set; }                 //最大安全库存
         public double price { get; set; }                       //价格
         public int OrderCycle { get; set; }                     //采购周期
-        public string PartProperty { get; set; }                //物料属性
+        public partProperty PartProperty { get; set; }          //物料属性
+        public partType PartType { get; set; }                  //物料类型
+        public partStatus PartStatus { get; set; }              //物料状态
         public bool IsSafety { get; set; }                      //物料安全标识
         public producingArea ProducingArea { get; set; }        //产地
+
+        public int SparePartNo { get; set; }                    //剩余备件库存
+        public int ReWorkNo { get; set; }                       //剩余返修件库存
 
 
         public override string ToString()
@@ -44,6 +49,8 @@ namespace SVW_BYSJ_WEB.Models
                 $"最大安全库存:{MaxSafetyStock}\n" +
                 $"采购周期:{OrderCycle}\n" +
                 $"物料属性:{PartProperty}\n" +
+                $"物料类型:{PartType}\n" +
+                $"物料状态:{PartStatus}\n" +
                 $"物料安全标识:{IsSafety}\n" +
                 $"产地:{ProducingArea}\n";
         }
@@ -61,18 +68,23 @@ namespace SVW_BYSJ_WEB.Models
         PU, PC, BOT, ML, EA, TON, CAN, PAC, SET, M2, TO, L, G, CAR, BAG, DMR, CAS, PR, rol, KG, PD, CTN, M, GP
     }
 
-    public enum partStatus
-    {
-        常,
-        重点,
-        E,
-        锁定,
-        停产,
-        富余,
-        呆滞
-    }
     public enum partProperty
     {
+        无属性,E,重点物料
+    }
+    public enum partStatus
+    {
+        无状态,
+        冻结	,
+        呆滞	,
+        常	,
+        富余	,
+        锁定	,
+        停产	
+    }
+    public enum partType
+    {
+        未分类,
         撑钩撑棒类,
         国产定制备件,
         防护类,

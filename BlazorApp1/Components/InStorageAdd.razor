@@ -1,0 +1,90 @@
+﻿@using Models
+@using Data
+
+    <BSModal @ref="InStorageAddModal">
+        @if (partInfo != null)
+        {
+            <BSModalHeader OnClick="@(() => InStorageAddModal.Hide())">对备件 @partInfo.SVWNumber 进行补货</BSModalHeader>
+            <BSModalBody>
+                <BForm @ref="InStorageAddForm" Inline="true">
+                    <div class="card" style="padding-bottom:0">
+                        <div class="card-body" style="padding-bottom:0">
+
+                            <BFormItem TValue="int" Name="@nameof(Models.InStorageRecord.InStorageNumber)" Label="入库单号" IsRequired="true">
+                                <BInput TValue="int" Value="@SqlServerCtl.newInStorageNumber()"></BInput>
+                            </BFormItem>
+                            <BFormItem TValue="DateTime?" Name="@nameof(Models.InStorageRecord.InStorageTime)" Label="入库日期" IsRequired="true">
+                                <BDatePicker/>
+                            </BFormItem>
+                            <BFormItem TValue="int" Name="@nameof(Models.InStorageRecord.InStorageCount)" Label="入库数量" IsRequired="true">
+                                <BInput TValue="int"/>
+                            </BFormItem>
+                            <BFormItem TValue="string" Name="@nameof(Models.InStorageRecord.writtenby)" Label="填写人" IsRequired="true">
+                                <BInput TValue="string"></BInput>
+                            </BFormItem>
+                            <BFormItem TValue="string" Name="@nameof(Models.InStorageRecord.remark)" Label="备注">
+                                <BSBasicInput InputType="BlazorStrap.InputType.TextArea" Rows="2" Value="string.Empty" />
+                            </BFormItem>
+                        </div>
+                    </div>
+                </BForm>
+            </BSModalBody>
+        }
+            <BSModalFooter>
+                <BSButton Color="Color.Primary" @onclick="@(() => ConfirmModal.Show())">添加库存</BSButton>
+                <BSButton Color="Color.Secondary" @onclick="@(() => Close())">放弃添加</BSButton>
+            </BSModalFooter>
+        </BSModal>
+
+    <BSModal @ref="ConfirmModal" IsCentered="true" Size="BlazorStrap.Size.Small">
+        <BSModalHeader OnClick="@(() => ConfirmModal.Hide())">确认</BSModalHeader>
+        <BSModalBody>
+            <p>是否添加库存？</p>
+        </BSModalBody>
+        <BSModalFooter>
+            <BSButton Color="Color.Primary" @onclick="@(e => Submit())">确定</BSButton>
+            <BSButton Color="Color.Secondary" @onclick="@(() => ConfirmModal.Hide())">返回</BSButton>
+        </BSModalFooter>
+    </BSModal>
+
+@code {
+    BSModal InStorageAddModal;
+    BSModal ConfirmModal;
+    BForm InStorageAddForm;
+
+    [Inject]
+    Blazui.Component.MessageBox MessageBox { get; set; }
+
+    [Parameter]
+    public SparePart partInfo { get; set; }
+    public BSModal fatherModal;
+
+    protected void Submit()
+    {
+        if (!InStorageAddForm.IsValid())
+        {
+            return;
+        }
+
+        var inStorageRecord = InStorageAddForm.GetValue<InStorageRecord>();
+        inStorageRecord.SVWNumber = partInfo.SVWNumber;
+        string message = "备件" + partInfo.SVWNumber + "已经成功补货" + inStorageRecord.InStorageCount + "件";
+        _ = MessageBox.AlertAsync(message);
+        SqlServerCtl.AddInStorageRecord(inStorageRecord);
+        Close();
+    }
+
+    public void Show()
+    {
+        InStorageAddForm.MarkAsRequireRender();
+        InStorageAddModal.Show();
+        fatherModal.Hide();
+    }
+
+    public void Close()
+    {
+        InStorageAddModal.Hide();
+        ConfirmModal.Hide();
+        fatherModal.Show();
+    }
+}

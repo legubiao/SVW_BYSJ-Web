@@ -6,7 +6,7 @@
         @if (partInfo != null)
         {
             <BSModalHeader OnClick="@(() => PartModifyModal.Hide())">修改备件 @partInfo.SVWNumber</BSModalHeader>
-            <BSModalBody>
+            <BSModalBody style="height: 35rem; overflow-y:scroll">
                 <BSListGroup IsFlush="true">
                     <BSListGroupItem>
                         <BSRow>
@@ -49,10 +49,7 @@
                     </BFormItem>
                     <BFormItem TValue="int" Name="@nameof(Models.SparePart.OrderCycle)" Label="采购周期">
                         <BInput TValue="int" Value="@partInfo.OrderCycle"></BInput>
-                    </BFormItem>
-                    <BFormItem TValue="string" Name="@nameof(Models.SparePart.PartProperty)" Label="物料属性">
-                        <BInput TValue="string" Value="@partInfo.PartProperty"></BInput>
-                    </BFormItem>
+                    </BFormItem>                    
                 </BForm>
             </BSModalBody>
             <BSModalFooter>
@@ -71,7 +68,7 @@
 
     </BSModal>
 
-    <BSModal @ref="ConfirmModal" IsCentered="true">
+    <BSModal @ref="ConfirmModal" IsCentered="true" Size="BlazorStrap.Size.Small">
         <BSModalHeader OnClick="@(() => ConfirmModal.Hide())">警告</BSModalHeader>
         <BSModalBody>
             <p>是否修改备件信息？</p>
@@ -81,7 +78,7 @@
             <BSButton Color="Color.Secondary" @onclick="@(() => ConfirmModal.Hide())">返回</BSButton>
         </BSModalFooter>
     </BSModal>
-    <BSModal @ref="ConfirmModal2" IsCentered="true">
+    <BSModal @ref="ConfirmModal2" IsCentered="true" Size="BlazorStrap.Size.Small">
         <BSModalHeader OnClick="@(() => ConfirmModal2.Hide())">警告</BSModalHeader>
         <BSModalBody>
             <p>是否修改备件安全标识？</p>
@@ -134,10 +131,11 @@
     }
     public void Show()
     {
+        addPartInfoForm.Reset();
         PartModifyModal.Show();
     }
 
-
+     
     protected void Reset()
     {
         addPartInfoForm.Reset();

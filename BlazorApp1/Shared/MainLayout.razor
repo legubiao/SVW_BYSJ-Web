@@ -1,17 +1,20 @@
 ﻿@inherits LayoutComponentBase
-    <BPopup></BPopup>
-<div class="sidebar">
-    <NavMenu />
-</div>
+<BPopup></BPopup>
 
-<div class="main">
-    <div class="top-row px-4 auth" 
-         style="z-index:999;">
-        <LoginDisplay />
-        <a href="https://docs.microsoft.com/aspnet/" target="_blank">关于</a>
+    <div class="sidebar">
+        <NavMenu />
     </div>
 
-    <div class="content px-4">
-        @Body
+    <div class="main">
+        <div class="top-row px-4 auth"
+             style="z-index:999;">
+            <LoginDisplay />
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">关于</a>
+        </div>
+
+        <div class="content px-4">
+            @Body
+        </div>
     </div>
-</div>
+    
+    

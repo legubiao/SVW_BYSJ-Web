@@ -5,30 +5,39 @@
 
 <BTab>
     <BTabPanel Title="在职工程师">
-        <div class="card-columns">
+        <BSCard CardType="CardType.Columns">
             @foreach (var engineer in OnEngineers)
             {
-                <div class="card text-center border-primary">
-                                       
-                    <h5 class="card-header">@engineer.Name</h5>
-                    <ul class="card-body">
-                        <li>
-                            ID：@engineer.ID
-                        </li>
-                        <li>
-                            车间：@engineer.Workshop
-                        </li>
-                        <li>
-                            组别：@engineer.Group
-                        </li>
-                    </ul>
-                </div>
-             }
-        </div>       
+                <BSCard Color="Color.Dark" IsOutline="true" style="padding:0px">
+                    <BSCard CardType="CardType.Body" style="padding-bottom:5px;">
+                        <BSCard CardType="CardType.Title">
+                            <BSRow>
+                                <BSCol XS="6">@engineer.Name</BSCol>
+                                <BSCol XS="6" style="text-align:right">ID:@engineer.ID</BSCol>
+                            </BSRow>
+                        </BSCard>
+                        <BSListGroup IsFlush="true" style="margin-bottom:0">
+                            <BSListGroupItem>
+                                <BSRow>
+                                    <BSCol XS="6">车间：@engineer.Workshop</BSCol>
+                                    <BSCol XS="6">工厂：@engineer.Group</BSCol>
+                                </BSRow>
+                            </BSListGroupItem>
+                            <BSListGroupItem>
+                                <BSRow>
+                                    <BSCol XS="6">维护次数：@engineer.RepairTimes</BSCol>
+                                    <BSCol XS="6">保养次数：@engineer.MaintainTimes</BSCol>
+                                </BSRow>
+                            </BSListGroupItem>
+                        </BSListGroup>
+                    </BSCard>
+                </BSCard>
+            }
+        </BSCard>
     </BTabPanel>
 
     <BTabPanel Title="添加工程师">
-        <BForm Style="width:400px;" @ref="addEngForm">
+        <BForm Style="width: 400px;" @ref="addEngForm">
             <BFormItem TValue="string" Name="@nameof(Models.Engineer.Name)" Label="姓名" IsRequired="true">
                 <BInput TValue="string"></BInput>
             </BFormItem>
@@ -51,25 +60,35 @@
     </BTabPanel>
 
     <BTabPanel Title="离职工程师">
-        @foreach (var engineer in OffEngineers)
-                        {
-            <div class="panel panel-warning">
-                <div class="panel-heading">
-                    @engineer.Name
-                </div>
-                <ul class="panel-body">
-                    <li>
-                        ID：@engineer.ID
-                    </li>
-                    <li>
-                        车间：@engineer.Workshop
-                    </li>
-                    <li>
-                        组别：@engineer.Group
-                    </li>
-                </ul>
-            </div>
-        }
+        <BSCard CardType="CardType.Columns">
+            @foreach (var engineer in OffEngineers)
+            {
+                <BSCard Color="Color.Secondary" IsOutline="true" style="padding:0px">
+                    <BSCard CardType="CardType.Body" style="padding-bottom:5px;">
+                        <BSCard CardType="CardType.Title">
+                            <BSRow>
+                                <BSCol XS="6">@engineer.Name</BSCol>
+                                <BSCol XS="6" style="text-align:right">ID:@engineer.ID</BSCol>
+                            </BSRow>
+                        </BSCard>
+                        <BSListGroup IsFlush="true" style="margin-bottom:0">
+                            <BSListGroupItem>
+                                <BSRow>
+                                    <BSCol XS="6">车间：@engineer.Workshop</BSCol>
+                                    <BSCol XS="6">工厂：@engineer.Group</BSCol>
+                                </BSRow>
+                            </BSListGroupItem>
+                            <BSListGroupItem>
+                                <BSRow>
+                                    <BSCol XS="6">维护次数：@engineer.RepairTimes</BSCol>
+                                    <BSCol XS="6">保养次数：@engineer.MaintainTimes</BSCol>
+                                </BSRow>
+                            </BSListGroupItem>
+                        </BSListGroup>
+                    </BSCard>
+                </BSCard>
+            }
+        </BSCard>
     </BTabPanel>
 </BTab>
 

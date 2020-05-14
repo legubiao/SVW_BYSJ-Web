@@ -1,0 +1,134 @@
+﻿@using Models
+@using Data
+
+
+<BSModal @ref="PartDetailModal">
+    @if (partInfo != null)
+    {
+        <BSModalHeader OnClick="@(() => PartDetailModal.Hide())">@partInfo.Description</BSModalHeader>
+        <BSModalBody>
+            <BSListGroup IsFlush="true">
+                <BSListGroupItem>物料生成日期: @partInfo.CreatDate</BSListGroupItem>
+                <BSListGroupItem>
+                    <BSRow>
+                        <BSCol XS="6">DC物料号: @partInfo.DCNumber</BSCol>
+                        <BSCol XS="6">SVW物料号: @partInfo.SVWNumber</BSCol>
+                    </BSRow>
+                </BSListGroupItem>
+                <BSListGroupItem>
+                    <BSRow>
+                        <BSCol XS="3">备件制造商</BSCol>
+                        <BSCol XS="9">@partInfo.PartProducer</BSCol>
+                    </BSRow>
+                    <BSRow>
+                        <BSCol XS="3">设备制造商</BSCol>
+                        <BSCol XS="9">@partInfo.DeviceProducer</BSCol>
+                    </BSRow>
+                </BSListGroupItem>
+                <BSListGroupItem>
+                    <BSRow>
+                        <BSCol XS="6">机器号: @partInfo.MachineNumber</BSCol>
+                        <BSCol XS="6">图号: @partInfo.MapNumber</BSCol>
+                    </BSRow>
+                </BSListGroupItem>
+                <BSListGroupItem>
+                    <BSRow>
+                        <BSCol XS="4">计量单位: @partInfo.CountUnit</BSCol>
+                        <BSCol XS="4">ABC码: @partInfo.ABCNumber</BSCol>
+                        <BSCol XS="4">计划员码: @partInfo.PlannerNumber</BSCol>
+                    </BSRow>
+                </BSListGroupItem>
+                <BSListGroupItem>
+                    <BSRow>
+                        <BSCol XS="4">最小安全库存: @partInfo.MinSafetyStock</BSCol>
+                        <BSCol XS="4">最大安全库存: @partInfo.MaxSafetyStock</BSCol>
+                        <BSCol XS="4">采购周期: @partInfo.OrderCycle</BSCol>
+                    </BSRow>
+                </BSListGroupItem>
+                <BSListGroupItem Class="text-center">
+                    <BSRow>
+                        <BSCol XS="4"><b>【属性】</b></BSCol>
+                        <BSCol XS="4"><b>【类型】</b></BSCol>
+                        <BSCol XS="4"><b>【状态】</b></BSCol>
+                    </BSRow>
+                    <BSRow>
+                        <BSCol XS="4">@partInfo.PartProperty</BSCol>
+                        <BSCol XS="4">@partInfo.PartType</BSCol>
+                        <BSCol XS="4">@partInfo.PartStatus</BSCol>
+                    </BSRow>
+                </BSListGroupItem>
+                <BSListGroupItem>
+                    <BSRow>
+                        <BSCol XS="6">备件库存: @partInfo.SparePartNo</BSCol>
+                        <BSCol XS="6">返修件库存: @partInfo.ReWorkNo</BSCol>
+                    </BSRow>
+                </BSListGroupItem>
+                @if (partInfo.IsSafety == true)
+                {
+                    <BSListGroupItem Color="Color.Success">
+                        物料已经具有安全标识
+                    </BSListGroupItem>
+                }
+                else
+                {
+                    <BSListGroupItem Color="Color.Danger">
+                        物料缺少安全标识
+                    </BSListGroupItem>
+                }
+                <BSListGroupItem>产地: @partInfo.ProducingArea</BSListGroupItem>
+            </BSListGroup>
+        </BSModalBody>
+    }
+
+<BSModalFooter>
+    <BSButton Color="Color.Primary" @onclick="@(() => InStorageAddModal.Show())">补货</BSButton>
+    <BSButton Color="Color.Primary" @onclick="@(() => ReWorkAddModal.Show())">返修</BSButton>
+    <BSButton Color="Color.Primary" @onclick="@(() => AddRecordModal.Show())">创建维修单</BSButton>
+    <BSButton Color="Color.Secondary" @onclick="@(() => ModifyModal.Show())">修改</BSButton>
+    <BSButton Color="Color.Danger" @onclick="@(() => ConfirmDeleteModal.Show())">删除</BSButton>
+</BSModalFooter>
+</BSModal>
+
+<PartInfoModify partInfo="partInfo" detailModal="PartDetailModal" @ref="ModifyModal"/>
+<Part2Record partInfo="partInfo" @ref="AddRecordModal"/>
+
+
+<BSModal @ref="ConfirmDeleteModal" IsCentered="true" Size="BlazorStrap.Size.Small">
+    <BSModalHeader OnClick="@(() => ConfirmDeleteModal.Hide())">警告</BSModalHeader>
+    <BSModalBody>
+        <p>是否要删除备件？</p>
+    </BSModalBody>
+    <BSModalFooter>
+        <BSButton Color="Color.Danger" @onclick="@(() => DeleteItem(partInfo))">删除</BSButton>
+        <BSButton Color="Color.Secondary" @onclick="@(() => ConfirmDeleteModal.Hide())">返回</BSButton>
+    </BSModalFooter>
+</BSModal>
+
+<InStorageAdd partInfo="partInfo" @ref="InStorageAddModal"/>
+<ReWorkAdd partInfo="partInfo" @ref="ReWorkAddModal"/>
+
+@code {
+    BSModal PartDetailModal;
+    BSModal ConfirmDeleteModal;
+    PartInfoModify ModifyModal;
+    Part2Record AddRecordModal;
+    InStorageAdd InStorageAddModal;
+    ReWorkAdd ReWorkAddModal;
+
+    [Parameter]
+    public SparePart partInfo { get; set; }
+
+    private void DeleteItem(SparePart deletedPart)
+    {
+        SqlServerCtl.DeletePartInfo(deletedPart.SVWNumber);
+        PartDetailModal.Hide();
+        ConfirmDeleteModal.Hide();
+    }
+
+    public void Show()
+    {        
+        PartDetailModal.Show();
+        InStorageAddModal.fatherModal = PartDetailModal;
+        AddRecordModal.fatherModal = PartDetailModal;
+    }
+}

@@ -15,10 +15,15 @@ namespace SVW_BYSJ_WEB.Data
         public static int newEngineerID()
         {
             string command = "select Max(ID) ID from 维护工程师";
-            SqlDataReader reader = readData(command);
-            reader.Read();
-            int ID = (int)reader["ID"] + 1;
-            return ID;
+            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
+            {
+                sqlConn.Open();
+                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
+                SqlDataReader reader = sqlComm.ExecuteReader();
+                reader.Read();
+                int ID = (int)reader["ID"] + 1;
+                return ID;
+            }            
         }
         //列出工程师
         public static IList<Engineer> ListEngineer( bool isOn)
@@ -33,20 +38,25 @@ namespace SVW_BYSJ_WEB.Data
                 command = "select * from 工程师详细表 where 是否在职='False'";
             }
 
-            SqlDataReader reader = readData(command);
-            while (reader.Read())
+            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
             {
-                Engineer engineer = new Engineer();
-                engineer.ID = (int)reader["ID"];
-                engineer.Name = (string)reader["姓名"];
-                engineer.Workshop = (workshop)Enum.Parse(typeof(workshop),(string)reader["车间"]);
-                engineer.Group = (group)Enum.Parse(typeof(group), (string)reader["工厂"]);
-                engineer.onWork = (bool)reader["是否在职"];
-                engineer.RepairTimes = (int)reader["维护次数"];
-                engineer.MaintainTimes = (int)reader["保养次数"];
-                onListEngineer.Add(engineer);
-            }
-            return onListEngineer;
+                sqlConn.Open();
+                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
+                SqlDataReader reader = sqlComm.ExecuteReader();
+                while (reader.Read())
+                {
+                    Engineer engineer = new Engineer();
+                    engineer.ID = (int)reader["ID"];
+                    engineer.Name = (string)reader["姓名"];
+                    engineer.Workshop = (workshop)Enum.Parse(typeof(workshop), (string)reader["车间"]);
+                    engineer.Group = (group)Enum.Parse(typeof(group), (string)reader["工厂"]);
+                    engineer.onWork = (bool)reader["是否在职"];
+                    engineer.RepairTimes = (int)reader["维护次数"];
+                    engineer.MaintainTimes = (int)reader["保养次数"];
+                    onListEngineer.Add(engineer);
+                }
+                return onListEngineer;
+            }            
         }       
         //列出可用工程师的名单
         public static List<string> ListEngineerName(bool MaintainOrRepair)
@@ -61,12 +71,19 @@ namespace SVW_BYSJ_WEB.Data
             {
                 command = "select 姓名 from 工程师详细表 where 是否在职='True' AND 保养次数 > 0";
             }
-            SqlDataReader reader = readData(command);
-            while (reader.Read())
+
+            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
             {
-                nameList.Add((string)reader["姓名"]);
+                sqlConn.Open();
+                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
+                SqlDataReader reader = sqlComm.ExecuteReader();
+                while (reader.Read())
+                {
+                    nameList.Add((string)reader["姓名"]);
+                }
+                return nameList;
             }
-            return nameList;
+            
         }
         //添加工程师
         public static void AddEngineer(Engineer engineer)
@@ -77,36 +94,53 @@ namespace SVW_BYSJ_WEB.Data
         }
 
         //搜寻备件记录
-        public static IList<SparePart> SearchParts(string keyword)
+        public static IList<SparePart> SearchParts(string keyword,bool isDescription)
         {
             List<SparePart> spareParts = new List<SparePart>();
-            string command = "select * from 备件信息表 where [中/英文描述/规格型] like '%" + keyword + "%'";
-            SqlDataReader reader = readData(command);
-            while (reader.Read())
+            string command;
+            if (isDescription)
             {
-                SparePart sparePart = new SparePart();
-                sparePart.CreatDate = (DateTime)reader["物料生成日期"];
-                sparePart.SVWNumber = (string)reader["SVW物料号"];
-                sparePart.DCNumber = (string)reader["DC物料号"];
-                sparePart.Description = (string)reader["中/英文描述/规格型"];
-                sparePart.PartProducer = (string)reader["备件制造商"];
-                sparePart.DeviceProducer = (string)reader["设备制造商"];
-                sparePart.MachineNumber = (string)reader["设备编号（机器号）"];
-                sparePart.MapNumber = (string)reader["图号"];
-                sparePart.CountUnit = (partUnit)Enum.Parse(typeof(partUnit), (string)reader["计量单位"]);
-                sparePart.ABCNumber = (ABCnumber)Enum.Parse(typeof(ABCnumber), (string)reader["ABC码"]);
-                sparePart.PlannerNumber = (string)reader["计划员码"];
-                sparePart.price = (double)reader["参考单价"];
-                sparePart.MinSafetyStock = (int)reader["最小安全库存"];
-                sparePart.MaxSafetyStock = (int)reader["最大安全库存"];
-                sparePart.OrderCycle = (int)reader["采购周期"];
-                sparePart.PartProperty = (string)reader["物料属性"];
-                sparePart.IsSafety = (bool)reader["物料安全标识"];
-                sparePart.ProducingArea = (producingArea)Enum.Parse(typeof(producingArea), (string)reader["产地"]);
-
-                spareParts.Add(sparePart);
+                command = "select * from 备件信息与库存表 where [中/英文描述/规格型] like '%" + keyword + "%'";
             }
-            return spareParts;
+            else
+            {
+                command = "select * from 备件信息与库存表 where SVW物料号 like '%" + keyword + "%'";
+            }
+            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
+            {
+                sqlConn.Open();
+                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
+                SqlDataReader reader = sqlComm.ExecuteReader();
+                while (reader.Read())
+                {
+                    SparePart sparePart = new SparePart();
+                    sparePart.CreatDate = (DateTime)reader["物料生成日期"];
+                    sparePart.SVWNumber = (string)reader["SVW物料号"];
+                    sparePart.DCNumber = (string)reader["DC物料号"];
+                    sparePart.Description = (string)reader["中/英文描述/规格型"];
+                    sparePart.PartProducer = (string)reader["备件制造商"];
+                    sparePart.DeviceProducer = (string)reader["设备制造商"];
+                    sparePart.MachineNumber = (string)reader["设备编号（机器号）"];
+                    sparePart.MapNumber = (string)reader["图号"];
+                    sparePart.CountUnit = (partUnit)Enum.Parse(typeof(partUnit), (string)reader["计量单位"]);
+                    sparePart.ABCNumber = (ABCnumber)Enum.Parse(typeof(ABCnumber), (string)reader["ABC码"]);
+                    sparePart.PlannerNumber = (string)reader["计划员码"];
+                    sparePart.price = (double)reader["参考单价"];
+                    sparePart.MinSafetyStock = (int)reader["最小安全库存"];
+                    sparePart.MaxSafetyStock = (int)reader["最大安全库存"];
+                    sparePart.OrderCycle = (int)reader["采购周期"];
+                    sparePart.PartProperty = (partProperty)Enum.Parse(typeof(partProperty), (string)reader["物料属性"]);
+                    sparePart.PartType = (partType)Enum.Parse(typeof(partType), (string)reader["物料类型"]);
+                    sparePart.PartStatus = (partStatus)Enum.Parse(typeof(partStatus), (string)reader["物料状态"]);
+                    sparePart.IsSafety = (bool)reader["物料安全标识"];
+                    sparePart.ProducingArea = (producingArea)Enum.Parse(typeof(producingArea), (string)reader["产地"]);
+                    sparePart.SparePartNo= (int)reader["备件库存"];
+                    sparePart.ReWorkNo = (int)reader["返修件库存"];
+                    spareParts.Add(sparePart);
+                }
+                return spareParts;
+            }
+            
         }
         //添加备件记录
         public static void AddPartInfo(SparePart sparePart)
@@ -161,6 +195,43 @@ namespace SVW_BYSJ_WEB.Data
         }
 
 
+        //列出已完成维修单的计数表
+        public static List<ModeCount> GetRecordCount()
+        {
+            List<ModeCount> summaryCount = new List<ModeCount>();
+            string command = "select * from 故障单计数";
+            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
+            {               
+                sqlConn.Open();
+                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
+                SqlDataReader reader = sqlComm.ExecuteReader();
+                while (reader.Read())
+                {
+                    ModeCount modeCount = new ModeCount();
+                    modeCount.FailureMode = (String)reader["故障类型"];
+                    modeCount.finishedCount = (int)reader["已完成故障单次数"];
+                    modeCount.totalCount = (int)reader["总故障发生次数"];
+                    string picture;
+                    switch (modeCount.FailureMode)
+                    {
+                        case "PLC故障": picture = "PLC"; break;
+                        case "传输系统故障": picture = "Trans"; break;
+                        case "切割设备": picture = "Cutter"; break;
+                        case "夹具故障": picture = "Fixer"; break;
+                        case "定位设备": picture = "Locate"; break;
+                        case "机器人故障": picture = "Robot"; break;
+                        case "机械断裂": picture = "Machine"; break;
+                        case "涂胶设备": picture = "Glu"; break;
+                        case "激光设备故障": picture = "Laser"; break;
+                        case "焊接设备": picture = "Weld"; break;
+                        default: picture = "Others"; break;
+                    }
+                    modeCount.location = "../Image/"+picture+".jpg";
+                    summaryCount.Add(modeCount);
+                }
+                return summaryCount;
+            }    
+        }
         //列出维修单
         public static IList<repairRecord> ListRepairRecord(bool isOn)
         {
@@ -175,35 +246,41 @@ namespace SVW_BYSJ_WEB.Data
                 command = "Select * from 维护记录 where 故障单完成情况 = 0";   //未完成
             }
 
-            SqlDataReader reader = readData(command);
-            while (reader.Read())
+            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
             {
-                repairRecord record = new repairRecord();
-                record.orderNumber = (string)reader["维修单号"];
-                record.maintainTime = (DateTime)reader["维护日期"];
-                record.Group = (group)Enum.Parse(typeof(group),(string)reader["工厂"]);
-                record.Workshop = (workshop)Enum.Parse(typeof(workshop),(string)reader["车间"]);
-                record.Area = (string)reader["区域"];
-                record.Station=(string)reader["工位"];
-                record.FailureMode=(failureMode)Enum.Parse(typeof(failureMode),(string)reader["故障类型"]);
-                record.FailureDetail=(string)reader["故障内容"];
-                record.RepairMeasures=(string)reader["修理措施"];
-                record.LongtimeMeasures=(string)reader["长期措施"];
-                record.MaintanenceTime=(int)reader["故障修理时间"];
-                record.RepairPeople = (string)reader["维修责任人"];
-                record.MaintanencePeople = (string)reader["保养责任人"];
-                record.ShutdownTime = (int)reader["影响主线时间"];
-                record.writtenby = (string)reader["填写人"];
-                record.writtenTime = (DateTime)reader["填写时间"];
-                record.SVWNumber = (string)reader["SVW物料号"];
-                record.SparePartNo = (int)reader["备件消耗数量"];
-                record.ReworkNo = (int)reader["返修件消耗数量"];
-                record.isFinished = (bool)reader["故障单完成情况"];
-                record.remark = (string)reader["备注"];
-                recordList.Add(record);
+                sqlConn.Open();
+                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
+                SqlDataReader reader = sqlComm.ExecuteReader();
+                while (reader.Read())
+                {
+                    repairRecord record = new repairRecord();
+                    record.orderNumber = (string)reader["维修单号"];
+                    record.maintainTime = (DateTime)reader["维护日期"];
+                    record.Group = (group)Enum.Parse(typeof(group), (string)reader["工厂"]);
+                    record.Workshop = (workshop)Enum.Parse(typeof(workshop), (string)reader["车间"]);
+                    record.Area = (string)reader["区域"];
+                    record.Station = (string)reader["工位"];
+                    record.FailureMode = (failureMode)Enum.Parse(typeof(failureMode), (string)reader["故障类型"]);
+                    record.FailureDetail = (string)reader["故障内容"];
+                    record.RepairMeasures = (string)reader["修理措施"];
+                    record.LongtimeMeasures = (string)reader["长期措施"];
+                    record.MaintanenceTime = (int)reader["故障修理时间"];
+                    record.RepairPeople = (string)reader["维修责任人"];
+                    record.MaintanencePeople = (string)reader["保养责任人"];
+                    record.ShutdownTime = (int)reader["影响主线时间"];
+                    record.writtenby = (string)reader["填写人"];
+                    record.writtenTime = (DateTime)reader["填写时间"];
+                    record.SVWNumber = (string)reader["SVW物料号"];
+                    record.SparePartNo = (int)reader["备件消耗数量"];
+                    record.ReworkNo = (int)reader["返修件消耗数量"];
+                    record.isFinished = (bool)reader["故障单完成情况"];
+                    record.remark = (string)reader["备注"];
+                    recordList.Add(record);
+                }
+                return recordList;
             }
-            return recordList;
-        }
+            
+        }        
         //添加维修单
         public static void AddRepairRecord(repairRecord record)
         {
@@ -247,22 +324,143 @@ namespace SVW_BYSJ_WEB.Data
             }
             ManipulateData(command);
         }
-
-        //通用：读取数据
-        static SqlDataReader readData(string command)
+        //列出特定失效模式的Summary
+        public static IList<Strategy> ListStrategy(string FailureMode)
         {
-            SqlConnection sqlConn = new SqlConnection(getConnectionString());
-            sqlConn.Open();
-            SqlCommand sqlComm = new SqlCommand(command, sqlConn);
-            return sqlComm.ExecuteReader();
+            IList<Strategy> strategies = new List<Strategy>();
+            string command1 = "select 故障内容,count(故障内容)as 记录条数 from 维护记录 where 故障类型 = '" + FailureMode + "' group by 故障内容";
+            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
+            {
+                sqlConn.Open();
+                SqlCommand sqlComm = new SqlCommand(command1, sqlConn);
+                SqlDataReader reader = sqlComm.ExecuteReader();
+                while (reader.Read())
+                {
+                    Strategy strategy = new Strategy();
+                    strategy.FailureDetail = (string)reader["故障内容"];
+                    strategy.strategyCount = (int)reader["记录条数"];
+                    strategies.Add(strategy);
+                }
+                return strategies;
+            }
         }
+        public static IList<repairRecord> GetRecordBySummary(string FailureMode,string FailureDetail)
+        {
+            IList<repairRecord> recordList = new List<repairRecord>();
+            string command = "select * from 维护记录 where 故障类型 = '" + FailureMode + "' AND 故障内容='" + FailureDetail + "'";
+            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
+            {
+                sqlConn.Open();
+                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
+                SqlDataReader reader = sqlComm.ExecuteReader();
+                while (reader.Read())
+                {
+                    repairRecord record = new repairRecord();
+                    record.orderNumber = (string)reader["维修单号"];
+                    record.maintainTime = (DateTime)reader["维护日期"];
+                    record.Group = (group)Enum.Parse(typeof(group), (string)reader["工厂"]);
+                    record.Workshop = (workshop)Enum.Parse(typeof(workshop), (string)reader["车间"]);
+                    record.Area = (string)reader["区域"];
+                    record.Station = (string)reader["工位"];
+                    record.FailureMode = (failureMode)Enum.Parse(typeof(failureMode), (string)reader["故障类型"]);
+                    record.FailureDetail = (string)reader["故障内容"];
+                    record.RepairMeasures = (string)reader["修理措施"];
+                    record.LongtimeMeasures = (string)reader["长期措施"];
+                    record.MaintanenceTime = (int)reader["故障修理时间"];
+                    record.RepairPeople = (string)reader["维修责任人"];
+                    record.MaintanencePeople = (string)reader["保养责任人"];
+                    record.ShutdownTime = (int)reader["影响主线时间"];
+                    record.writtenby = (string)reader["填写人"];
+                    record.writtenTime = (DateTime)reader["填写时间"];
+                    record.SVWNumber = (string)reader["SVW物料号"];
+                    record.SparePartNo = (int)reader["备件消耗数量"];
+                    record.ReworkNo = (int)reader["返修件消耗数量"];
+                    record.isFinished = (bool)reader["故障单完成情况"];
+                    record.remark = (string)reader["备注"];
+                    recordList.Add(record);
+                }
+                return recordList;
+            }
+        }
+        public static string newRepairRecordNumber()
+        {
+            string command = "SELECT count(*)as count from 维护记录";
+            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
+            {
+                sqlConn.Open();
+                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
+                SqlDataReader reader = sqlComm.ExecuteReader();
+                reader.Read();
+                int ID = (int)reader["count"] + 1000001;
+                return "MD"+ID;
+            }
+        }
+
+
+        public static void AddInStorageRecord(InStorageRecord record)
+        {
+            string command = "INSERT INTO 补货记录(入库单号,SVW物料号,入库日期,入库数量,填写人,填写日期,备注) " +
+                "VALUES(" + record.InStorageNumber + ",'" 
+                + record.SVWNumber + "','" 
+                + record.InStorageTime + "','" 
+                + record.InStorageCount + "','"
+                + record.writtenby + "','"
+                + DateTime.Now + "','"
+                + record.remark +  "')";
+            ManipulateData(command);
+        }
+        public static int newInStorageNumber()
+        {
+            string command = "select Max(入库单号) 入库单号 from 补货记录";
+            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
+            {
+                sqlConn.Open();
+                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
+                SqlDataReader reader = sqlComm.ExecuteReader();
+                reader.Read();
+                int ID = (int)reader["入库单号"] + 1;
+                return ID;
+            }
+        }
+
+        public static void AddReWorkRecord(ReWorkRecord record)
+        {
+            string command = "INSERT INTO 返修件表(编号,工厂,SVW物料号,存放位置,补充数量,补充日期,填写人,填写日期,备注) " +
+                "VALUES(" + record.ReWorkNumber + ",'"
+                + record.Group + "','"
+                + record.SVWNumber + "','"
+                + record.Location + "','"
+                + record.ReWorkCount + "','"
+                + record.ReWorkTime + "','"
+                + record.writtenby + "','"
+                + DateTime.Now + "','"
+                + record.remark + "')";
+            ManipulateData(command);
+        }
+        public static int newReWorkNumber()
+        {
+            string command = "select Max(编号) 编号 from 返修件表";
+            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
+            {
+                sqlConn.Open();
+                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
+                SqlDataReader reader = sqlComm.ExecuteReader();
+                reader.Read();
+                int ID = (int)reader["编号"] + 1;
+                return ID;
+            }
+        }
+
+
         //通用：更改数据
         static void ManipulateData(string command)
         {
-            SqlConnection sqlConn = new SqlConnection(getConnectionString());
-            sqlConn.Open();
-            SqlCommand sqlComm = new SqlCommand(command, sqlConn);
-            sqlComm.ExecuteNonQuery();
+            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
+            {
+                sqlConn.Open();
+                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
+                sqlComm.ExecuteNonQuery();
+            }
         }
         //通用：连接数据库
         private static string getConnectionString()

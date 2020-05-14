@@ -1,0 +1,34 @@
+﻿@using Data
+@using Models
+
+    <div style="margin-top:15px">
+        <BSCard CardType="CardType.Columns">
+            @foreach (ModeCount mode in ModeCounts)
+            {
+                <BSCard Color="Color.Secondary" IsOutline="true" @onclick="e=>ClickItem(mode.FailureMode)">
+                    <BSCard CardType="CardType.Image" VerticalAlignment="VerticalAlignment.Top" src="@mode.location" alt="Card image cap" />
+                    <BSCard CardType="CardType.Body">
+                        <BSCard CardType="CardType.Title">@mode.FailureMode</BSCard>
+                        <BSCard CardType="CardType.Text">
+                            已完成记录：@mode.finishedCount
+                            总记录数目：@mode.totalCount
+                        </BSCard>
+                    </BSCard>
+                </BSCard>
+            }
+        </BSCard>
+    </div>
+
+<RecordSummary2  @ref="modeSummary" />
+
+@code {
+    List<ModeCount> ModeCounts = SqlServerCtl.GetRecordCount();
+    RecordSummary2 modeSummary;
+    string selectedMode;
+    void ClickItem(string mode)
+    {
+        this.selectedMode = mode;
+        modeSummary.failureMode = mode;
+        modeSummary.Show();
+    }
+}

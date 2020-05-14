@@ -7,23 +7,42 @@
 @using SVW_BYSJ_WEB.Components
 
 <BSTabGroup>
-    <BSTabList IsList="true">
-        <BSTab>
-            <BSTabLabel>备件信息查询</BSTabLabel>
-            <BSTabContent>
-                <PartInfoSearch />
-            </BSTabContent>
-        </BSTab>
-        <BSTab>
-            <BSTabLabel>备件信息添加</BSTabLabel>
-            <BSTabContent>
-                <PartInfoAdd />
-            </BSTabContent>
-        </BSTab>
-    </BSTabList>
+    <BSRow>
+        <BSCol XS="9">
+            <BSTabList IsList="true">
+                <BSTab>
+                    <BSTabLabel>备件查询</BSTabLabel>
+                    <BSTabContent>
+                        <PartInfoSearch />
+                    </BSTabContent>
+                </BSTab>
+                <BSTab>
+                    <BSTabLabel>库存</BSTabLabel>
+                    <BSTabContent>
+
+                    </BSTabContent>
+                </BSTab>
+                <BSTab>
+                    <BSTabLabel>返修件</BSTabLabel>
+                    <BSTabContent>
+
+                    </BSTabContent>
+                </BSTab>
+            </BSTabList>
+        </BSCol>
+        <BSCol XS="3" class="text-right">
+            <BSButton Color="Color.Success" @onclick="@(e => infoAddModal.Show())" Id="AddPartInfoButton">
+                <span class="oi oi-plus" aria-hidden="true" />
+            </BSButton>
+            <BSTooltip Target="AddPartInfoButton" Placement="Placement.Top">新增备件基础信息</BSTooltip>
+        </BSCol>
+    </BSRow>
+    
     <BSTabSelectedContent />
 </BSTabGroup>
 
+<PartInfoAdd @ref="infoAddModal"/>
 
 @code {
+    PartInfoAdd infoAddModal;
 }

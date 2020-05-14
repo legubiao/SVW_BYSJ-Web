@@ -1,0 +1,96 @@
+﻿@using Models
+@using Data
+
+<BSModal @ref="ReWorkAddModal">
+    @if (partInfo != null)
+    {
+        <BSModalHeader OnClick="@(() => ReWorkAddModal.Hide())">对备件 @partInfo.SVWNumber 进行返修</BSModalHeader>
+        <BSModalBody style="height: 35rem; overflow-y:scroll">
+            <BForm @ref="ReWorkAddForm" Inline="true">
+                <div class="card" style="padding-bottom:0;margin-bottom:10px">
+                    <div class="card-body" style="padding-bottom:0">
+                        <BFormItem TValue="Models.group" Name="@nameof(Models.ReWorkRecord.Group)" Label="工厂" IsRequired="true">
+                            <BSelect TValue="Models.group" />
+                        </BFormItem>
+                        <BFormItem TValue="string" Name="@nameof(Models.ReWorkRecord.Location)" Label="存放位置" IsRequired="true">
+                            <BInput TValue="string"></BInput>
+                        </BFormItem>
+                    </div>
+                </div>
+                <div class="card" style="padding-bottom:0">
+                    <div class="card-body" style="padding-bottom:0">
+                        <BFormItem TValue="int" Name="@nameof(Models.ReWorkRecord.ReWorkNumber)" Label="返修单号" IsRequired="true">
+                            <BInput TValue="int"></BInput>
+                        </BFormItem>
+                        <BFormItem TValue="DateTime?" Name="@nameof(Models.ReWorkRecord.ReWorkTime)" Label="返修日期" IsRequired="true">
+                            <BDatePicker />
+                        </BFormItem>
+                        <BFormItem TValue="int" Name="@nameof(Models.ReWorkRecord.ReWorkCount)" Label="返修数量" IsRequired="true">
+                            <BInput TValue="int" />
+                        </BFormItem>
+                        <BFormItem TValue="string" Name="@nameof(Models.ReWorkRecord.writtenby)" Label="填写人" IsRequired="true">
+                            <BInput TValue="string"></BInput>
+                        </BFormItem>
+                        <BFormItem TValue="string" Name="@nameof(Models.ReWorkRecord.remark)" Label="备注">
+                            <BSBasicInput InputType="BlazorStrap.InputType.TextArea" Rows="2" Value="string.Empty" />
+                        </BFormItem>
+                    </div>
+                </div>
+            </BForm>
+        </BSModalBody>
+    }
+    <BSModalFooter>
+        <BSButton Color="Color.Primary" @onclick="@(() => ConfirmModal.Show())">添加返修件</BSButton>
+        <BSButton Color="Color.Secondary" @onclick="@(() => ReWorkAddModal.Hide())">放弃添加</BSButton>
+    </BSModalFooter>
+</BSModal>
+
+<BSModal @ref="ConfirmModal" IsCentered="true" Size="BlazorStrap.Size.Small">
+    <BSModalHeader OnClick="@(() => ConfirmModal.Hide())">确认</BSModalHeader>
+    <BSModalBody>
+        <p>是否添加返修件？</p>
+    </BSModalBody>
+    <BSModalFooter>
+        <BSButton Color="Color.Primary" @onclick="@(e => Submit())">确定</BSButton>
+        <BSButton Color="Color.Secondary" @onclick="@(() => ConfirmModal.Hide())">返回</BSButton>
+    </BSModalFooter>
+</BSModal>
+
+@code {
+    BSModal ReWorkAddModal;
+    BSModal ConfirmModal;
+    BForm ReWorkAddForm;
+
+    [Inject]
+    Blazui.Component.MessageBox MessageBox { get; set; }
+
+    [Parameter]
+    public SparePart partInfo { get; set; }
+
+    protected void Submit()
+    {
+        if (!ReWorkAddForm.IsValid())
+        {
+            return;
+        }
+
+        var ReWorkRecord = ReWorkAddForm.GetValue<ReWorkRecord>();
+        ReWorkRecord.SVWNumber = partInfo.SVWNumber;
+        string message = "备件" + partInfo.SVWNumber + "已经成功返修" + ReWorkRecord.ReWorkCount + "件";
+        _ = MessageBox.AlertAsync(message);
+        SqlServerCtl.AddReWorkRecord(ReWorkRecord);
+        Close();
+    }
+
+    public void Show()
+    {
+        ReWorkAddForm.MarkAsRequireRender();
+        ReWorkAddModal.Show();
+    }
+
+    public void Close()
+    {
+        ReWorkAddModal.Hide();
+        ConfirmModal.Hide();
+    }
+}

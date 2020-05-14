@@ -1,0 +1,57 @@
+﻿@using Data
+@using Models
+
+    <BSModal @ref="SummaryDetailModal" >
+        @if (failureMode != null)
+        {
+            <BSModalHeader OnClick="@(() =>SummaryDetailModal.Hide())">维护策略：@failureDetail</BSModalHeader>
+            <BSModalBody>
+                @foreach (var record in recordList)
+                {
+                    <BSCard Color="Color.Info" IsOutline="true" @onclick="e=>ClickItem(record)" style="margin-bottom:5px;padding:0px">
+                        <BSCard CardType="CardType.Body" style="padding:2px">
+                            <BSRow>
+                                <BSCol XS="6">@record.RepairMeasures</BSCol>
+                                <BSCol XS="6">工位： @record.Station</BSCol>
+                            </BSRow>
+                        </BSCard>
+                    </BSCard>
+                }
+            </BSModalBody>
+        }
+        <BSModalFooter>
+            <BSButton Color="Color.Secondary" @onclick="@(() => Close())">返回</BSButton>
+        </BSModalFooter>
+    </BSModal>
+
+    <RecordDetail record="selectedRecord" @ref="RecordDetailModal" />
+
+@code {
+    public string failureMode;
+    public string failureDetail;
+
+    repairRecord selectedRecord;
+    RecordDetail RecordDetailModal;
+    BSModal SummaryDetailModal;
+    public BSModal fatherModal;
+    public IList<Models.repairRecord> recordList;
+
+    private void ClickItem(repairRecord record)
+    {
+        selectedRecord = record;
+        RecordDetailModal.FatherModal = SummaryDetailModal;
+        RecordDetailModal.Show();
+    }
+
+    public void Show()
+    {
+        this.recordList = SqlServerCtl.GetRecordBySummary(failureMode,failureDetail);
+        SummaryDetailModal.Show();
+        fatherModal.Hide();
+    }
+    void Close()
+    {
+        SummaryDetailModal.Hide();
+        fatherModal.Show();
+    }
+}

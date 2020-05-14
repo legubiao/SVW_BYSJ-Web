@@ -1,0 +1,49 @@
+﻿@using Models
+@using Data
+    <BSModal @ref="ModeSummaryModal">
+        @if (failureMode != null)
+        {
+            <BSModalHeader OnClick="@(() =>ModeSummaryModal.Hide())">@failureMode</BSModalHeader>
+            <BSModalBody style="height: 35rem; overflow-y:scroll">
+                    @foreach (var strategy in strategies)
+                    {                      
+                        <BSCard Color="Color.Secondary" IsOutline="true" @onclick="e=>ClickItem(strategy.FailureDetail)" style="margin-bottom:5px;padding:0px">
+                            <BSCard CardType="CardType.Body" style="padding:7px">
+                                <BSRow>
+                                    <BSCol XS="9">@strategy.FailureDetail</BSCol>
+                                    <BSCol XS="3">次数： @strategy.strategyCount</BSCol>
+                                </BSRow>
+                            </BSCard>
+                        </BSCard>
+                    }
+            </BSModalBody>
+        }
+        <BSModalFooter>
+            <BSButton Color="Color.Secondary" @onclick="@(() => ModeSummaryModal.Hide())">返回</BSButton>
+        </BSModalFooter>
+    </BSModal>
+
+    <RecordSummary3 @ref="summaryDetail"/>
+
+@code {
+    public string failureMode;
+
+    IList<Strategy> strategies { get; set; }
+
+    BSModal ModeSummaryModal;
+    RecordSummary3 summaryDetail;
+
+    void ClickItem(string failureDetail)
+    {
+        summaryDetail.failureDetail = failureDetail;
+        summaryDetail.failureMode = failureMode;
+        summaryDetail.fatherModal = ModeSummaryModal;
+        summaryDetail.Show();
+    }
+
+    public void Show()
+    {
+        this.strategies = SqlServerCtl.ListStrategy(failureMode);
+        ModeSummaryModal.Show();
+    }
+}

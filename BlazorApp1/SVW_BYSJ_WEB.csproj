@@ -3,9 +3,13 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>aspnet-SVW_BYSJ_WEB-B4890340-5462-4316-8746-5EC58790746F</UserSecretsId>
-    <AssemblyName>SVW备件管理系统（学生毕设模型）</AssemblyName>
+    <AssemblyName>SVWBYSJWeb</AssemblyName>
     <RootNamespace>SVW_BYSJ_WEB</RootNamespace>
     <Copyright></Copyright>
+    <PackageId>SVWBYSJWeb</PackageId>
+    <Authors>legubiao</Authors>
+    <Company>SJTUlegubiao</Company>
+    <Product>SVWBlazor</Product>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,7 +24,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.2" />
   </ItemGroup>
 
 </Project>

@@ -8,21 +8,28 @@
             <BSCol XS="9">
                 <BSTabList IsList="true">
                     <BSTab>
-                        <BSTabLabel>未完成维修单</BSTabLabel>
+                        <BSTabLabel>待办维护</BSTabLabel>
                         <BSTabContent>
-                            <UnfinishedRecord />
+                            <RecordUnfinished />
                         </BSTabContent>
                     </BSTab>
                     <BSTab>
-                        <BSTabLabel>已完成维修单</BSTabLabel>
+                        <BSTabLabel>历史经验</BSTabLabel>
                         <BSTabContent>
-                            <RecordAdd />
+                            <RecordSummary />
                         </BSTabContent>
                     </BSTab>
-                </BSTabList>
+                </BSTabList> 
             </BSCol>
             <BSCol XS="3" class="text-right">
-                <BSButton Color="Color.Primary" @onclick="@(e => addRecordModal.Show())">新维修单</BSButton>
+                <BSButton Color="Color.Primary" @onclick="@(e => addRecordModal.Show())" Id="AddRepairRecordButton">
+                    <span class="oi oi-plus" aria-hidden="true" />
+                </BSButton>
+                <BSTooltip Target="AddRepairRecordButton" Placement="Placement.Top">新增备件</BSTooltip>
+                <BSButton Color="Color.Primary" @onclick="@(e => addRecordModal.Show())" Id="SearchRepairRecordButton">
+                    <span class="oi oi-magnifying-glass" aria-hidden="true" />
+                </BSButton>
+                <BSTooltip Target="SearchRepairRecordButton" Placement="Placement.Top">查询备件</BSTooltip>
             </BSCol>
         </BSRow>       
         <BSTabSelectedContent />

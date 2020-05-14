@@ -1,157 +1,169 @@
 ﻿@using Models
 @using Data
 
-   
-    <BSModal @ref="Part2RecordModal">
-        @if (partInfo != null)
-        {
-            <BSModalHeader OnClick="@(() => Part2RecordModal.Hide())">使用备件 @partInfo.SVWNumber 创建维修单</BSModalHeader>
-        }
-        else
-        {
-            <BSModalHeader OnClick="@(() => Part2RecordModal.Hide())">创建无需消耗备件的维修单</BSModalHeader>
-        }
-        <BSModalBody>
-            <BForm @ref="Part2RecordForm" Inline="true">
-                @if (partInfo != null)
-                {
-                    <div class="card" style="padding-bottom:0;margin-bottom:10px">
-                        <div class="card-body" style="padding-bottom:0">
-                            <BFormItem TValue="string" Name="@nameof(Models.repairRecord.SVWNumber)" Label="SVW物料号" IsRequired="true">
-                                <BInput TValue="string" IsDisabled="true" Value="@partInfo.SVWNumber"></BInput>
-                            </BFormItem>
-                            <BFormItem TValue="int" Name="@nameof(Models.repairRecord.SparePartNo)" Label="备件消耗数量" IsRequired="true">
-                                <BInput TValue="int"></BInput>
-                            </BFormItem>
-                            <BFormItem TValue="int" Name="@nameof(Models.repairRecord.ReworkNo)" Label="返修件消耗数量" IsRequired="true">
-                                <BInput TValue="int"></BInput>
-                            </BFormItem>
-                        </div>
-                    </div>
-                }
+
+<BSModal @ref="Part2RecordModal" IsCentered="true">
+    @if (partInfo != null)
+    {
+        <BSModalHeader OnClick="@(() => Part2RecordModal.Hide())">使用备件 @partInfo.SVWNumber 创建维修单</BSModalHeader>
+    }
+    else
+    {
+        <BSModalHeader OnClick="@(() => Part2RecordModal.Hide())">创建无需消耗备件的维修单</BSModalHeader>
+    }
+    <BSModalBody style="height: 35rem; overflow-y:scroll">
+        <BForm @ref="Part2RecordForm" Inline="true">
+
+            @if (partInfo != null)
+            {
                 <div class="card" style="padding-bottom:0;margin-bottom:10px">
                     <div class="card-body" style="padding-bottom:0">
-                        <BFormItem TValue="string" Name="@nameof(Models.repairRecord.orderNumber)" Label="维修单号" IsRequired="true">
-                            <BInput TValue="string"></BInput>
-                        </BFormItem>
-                        <BFormItem TValue="DateTime?" Name="@nameof(Models.repairRecord.maintainTime)" Label="维护日期" IsRequired="true">
-                            <BDatePicker></BDatePicker>
-                        </BFormItem>
-                        <BFormItem TValue="Models.group" Name="@nameof(Models.repairRecord.Group)" Label="工厂" IsRequired="true">
-                            <BSelect TValue="Models.group" />
-                        </BFormItem>
-                        <BFormItem TValue="Models.workshop" Name="@nameof(Models.repairRecord.Workshop)" Label="车间" IsRequired="true">
-                            <BSelect TValue="Models.workshop" />
-                        </BFormItem>
-                        <BFormItem TValue="string" Name="@nameof(Models.repairRecord.Area)" Label="区域" IsRequired="true">
-                            <BInput TValue="string"></BInput>
-                        </BFormItem>
-                        <BFormItem TValue="string" Name="@nameof(Models.repairRecord.Station)" Label="工位" IsRequired="true">
-                            <BInput TValue="string"></BInput>
-                        </BFormItem>
-                        <BFormItem TValue="int" Name="@nameof(Models.repairRecord.MaintanenceTime)" Label="修理消耗时间(分钟)" IsRequired="true">
+                        <BFormItem TValue="int" Name="@nameof(Models.repairRecord.SparePartNo)" Label="备件消耗数量" IsRequired="true">
                             <BInput TValue="int"></BInput>
                         </BFormItem>
-                        <BFormItem TValue="int" Name="@nameof(Models.repairRecord.ShutdownTime)" Label="影响主线时间(分钟)" IsRequired="true">
+                        <BFormItem TValue="int" Name="@nameof(Models.repairRecord.ReworkNo)" Label="返修件消耗数量" IsRequired="true">
                             <BInput TValue="int"></BInput>
                         </BFormItem>
                     </div>
                 </div>
-                <div class="card" style="padding-bottom:0;margin-bottom:10px">
-                    <div class="card-body" style="padding-bottom:0">
-                        <BFormItem TValue="Models.failureMode" Name="@nameof(Models.repairRecord.FailureMode)" Label="故障类型" IsRequired="true">
-                            <BSelect TValue="Models.failureMode" />
-                        </BFormItem>
-                        <BFormItem TValue="string" Name="@nameof(Models.repairRecord.FailureDetail)" Label="故障内容" IsRequired="true">
-                            <BSBasicInput InputType="BlazorStrap.InputType.TextArea" Rows="2" Value="string.Empty" />
-                        </BFormItem>
-                        <BFormItem TValue="string" Name="@nameof(Models.repairRecord.RepairMeasures)" Label="修理措施" IsRequired="true">
-                            <BSBasicInput InputType="BlazorStrap.InputType.TextArea" Rows="2" Value="string.Empty" />
-                        </BFormItem>
-                        <BFormItem TValue="string" Name="@nameof(Models.repairRecord.LongtimeMeasures)" Label="长期措施" IsRequired="true">
-                            <BSBasicInput InputType="BlazorStrap.InputType.TextArea" Rows="2" Value="string.Empty" />
-                        </BFormItem>
-                    </div>
+            }
+            <div class="card" style="padding-bottom:0;margin-bottom:10px">
+                <div class="card-body" style="padding-bottom: 0">
+                    <BFormItem TValue="string" Name="@nameof(Models.repairRecord.orderNumber)" Label="维修单号" IsRequired="true">
+                        <BInput TValue="string" Value="SqlServerCtl.newRepairRecordNumber()" IsDisabled="true"></BInput>
+                    </BFormItem>
+                    <BFormItem TValue="DateTime?" Name="@nameof(Models.repairRecord.maintainTime)" Label="维护日期" IsRequired="true">
+                        <BDatePicker></BDatePicker>
+                    </BFormItem>
+                    <BFormItem TValue="Models.group" Name="@nameof(Models.repairRecord.Group)" Label="工厂" IsRequired="true">
+                        <BSelect TValue="Models.group" />
+                    </BFormItem>
+                    <BFormItem TValue="Models.workshop" Name="@nameof(Models.repairRecord.Workshop)" Label="车间" IsRequired="true">
+                        <BSelect TValue="Models.workshop" />
+                    </BFormItem>
+                    <BFormItem TValue="string" Name="@nameof(Models.repairRecord.Area)" Label="区域" IsRequired="true">
+                        <BInput TValue="string"></BInput>
+                    </BFormItem>
+                    <BFormItem TValue="string" Name="@nameof(Models.repairRecord.Station)" Label="工位" IsRequired="true">
+                        <BInput TValue="string"></BInput>
+                    </BFormItem>
+                    <BFormItem TValue="int" Name="@nameof(Models.repairRecord.MaintanenceTime)" Label="修理消耗时间(分钟)" IsRequired="true">
+                        <BInput TValue="int"></BInput>
+                    </BFormItem>
+                    <BFormItem TValue="int" Name="@nameof(Models.repairRecord.ShutdownTime)" Label="影响主线时间(分钟)" IsRequired="true">
+                        <BInput TValue="int"></BInput>
+                    </BFormItem>
                 </div>
-                <div class="card" style="padding-bottom:0;margin-bottom:10px">
-                    <div class="card-body" style="padding-bottom:0">
-                        <BFormItem TValue="string" Name="@nameof(Models.repairRecord.RepairPeople)" Label="维修责任人" IsRequired="true">
-                            <BSelect TValue="string">
-                                @foreach (var candidate in repairCandidate)
-                                {
-                                    <BSelectOption Value="candidate" Text="@candidate"></BSelectOption>
-                                }
-                            </BSelect>                          
-                        </BFormItem>
-                        <BFormItem TValue="string" Name="@nameof(Models.repairRecord.MaintanencePeople)" Label="保养责任人" IsRequired="true">
-                            <BSelect TValue="string">
-                                @foreach (var candidate in maintainCandidate)
-                                {
-                                    <BSelectOption Value="candidate" Text="@candidate"></BSelectOption>
-                                }
-                            </BSelect>
-                        </BFormItem>
-                        <BFormItem TValue="string" Name="@nameof(Models.repairRecord.writtenby)" Label="填写人" IsRequired="true">
-                            <BInput TValue="string"></BInput>
-                        </BFormItem>
-                        <BFormItem TValue="string" Name="@nameof(Models.repairRecord.remark)" Label="备注" IsRequired="true">
-                            <BInput TValue="string"></BInput>
-                        </BFormItem>
-                    </div>
-                </div>   
-            </BForm>
-        </BSModalBody>
-        <BSModalFooter>
-            <BSButton Color="Color.Primary" @onclick="@(() => ConfirmModal.Show())">创建维修单</BSButton>
-            <BSButton Color="Color.Secondary" @onclick="@(() => Part2RecordModal.Hide())">放弃创建</BSButton>
-        </BSModalFooter>
-    </BSModal>
+            </div>
+            <div class="card" style="padding-bottom:0;margin-bottom:10px">
+                <div class="card-body" style="padding-bottom:0">
+                    <BFormItem TValue="Models.failureMode" Name="@nameof(Models.repairRecord.FailureMode)" Label="故障类型" IsRequired="true">
+                        <BSelect TValue="Models.failureMode" />
+                    </BFormItem>
+                    <BFormItem TValue="string" Name="@nameof(Models.repairRecord.FailureDetail)" Label="故障内容">
+                        <BInput TValue="string" Type="@Blazui.Component.Input.InputType.Textarea" />
+                    </BFormItem>
+                    <BFormItem TValue="string" Name="@nameof(Models.repairRecord.RepairMeasures)" Label="修理措施">
+                        <BInput TValue="string" Type="@Blazui.Component.Input.InputType.Textarea" />
+                    </BFormItem>
+                    <BFormItem TValue="string" Name="@nameof(Models.repairRecord.LongtimeMeasures)" Label="长期措施">
+                        <BInput TValue="string" Type="@Blazui.Component.Input.InputType.Textarea" />
+                    </BFormItem>
+                </div>
+            </div>
+            <div class="card" style="padding-bottom:0;margin-bottom:10px">
+                <div class="card-body" style="padding-bottom:0">
+                    <BFormItem TValue="string" Name="@nameof(Models.repairRecord.RepairPeople)" Label="维修责任人" IsRequired="true">
+                        <BSelect TValue="string">
+                            @foreach (var candidate in repairCandidate)
+                            {
+                                <BSelectOption Value="candidate" Text="@candidate"></BSelectOption>
+                            }
+                        </BSelect>
+                    </BFormItem>
+                    <BFormItem TValue="string" Name="@nameof(Models.repairRecord.MaintanencePeople)" Label="保养责任人" IsRequired="true">
+                        <BSelect TValue="string">
+                            @foreach (var candidate in maintainCandidate)
+                            {
+                                <BSelectOption Value="candidate" Text="@candidate"></BSelectOption>
+                            }
+                        </BSelect>
+                    </BFormItem>
+                    <BFormItem TValue="string" Name="@nameof(Models.repairRecord.writtenby)" Label="填写人" IsRequired="true">
+                        <BInput TValue="string"></BInput>
+                    </BFormItem>
+                    <BFormItem TValue="string" Name="@nameof(Models.repairRecord.remark)" Label="备注" IsRequired="true">
+                        <BInput TValue="string"></BInput>
+                    </BFormItem>
+                </div>
+            </div>
+        </BForm>
+    </BSModalBody>
+    <BSModalFooter>
+        <BSButton Color="Color.Primary" @onclick="@(() => ConfirmModal.Show())">创建维修单</BSButton>
+        <BSButton Color="Color.Secondary" @onclick="@(() => Close())">放弃创建</BSButton>
+    </BSModalFooter>
+</BSModal>
 
-    <BSModal @ref="ConfirmModal" IsCentered="true">
-        <BSModalHeader OnClick="@(() => ConfirmModal.Hide())">警告</BSModalHeader>
-        <BSModalBody>
-            <p>是否创建维修单？</p>
-        </BSModalBody>
-        <BSModalFooter>
-            <BSButton Color="Color.Primary" @onclick="@(e => Submit())">创建</BSButton>
-            <BSButton Color="Color.Secondary" @onclick="@(() => ConfirmModal.Hide())">返回</BSButton>
-        </BSModalFooter>
-    </BSModal>
+<BSModal @ref="ConfirmModal" IsCentered="true" Size="BlazorStrap.Size.Small">
+    <BSModalHeader OnClick="@(() => ConfirmModal.Hide())">警告</BSModalHeader>
+    <BSModalBody>
+        <p>是否创建维修单？</p>
+    </BSModalBody>
+    <BSModalFooter>
+        <BSButton Color="Color.Primary" @onclick="@(e => Submit())">创建</BSButton>
+        <BSButton Color="Color.Secondary" @onclick="@(() => ConfirmModal.Hide())">返回</BSButton>
+    </BSModalFooter>
+</BSModal>
 
- @code {
-     [Inject]
-     Blazui.Component.MessageBox MessageBox { get; set; }
+@code {
+    [Inject]
+    Blazui.Component.MessageBox MessageBox { get; set; }
 
-     BForm Part2RecordForm;
-     BSModal Part2RecordModal;
-     BSModal ConfirmModal;
-     List<string> repairCandidate = SqlServerCtl.ListEngineerName(true);
-     List<string> maintainCandidate = SqlServerCtl.ListEngineerName(false);
+    BForm Part2RecordForm;
+    BSModal Part2RecordModal;
+    BSModal ConfirmModal;
+    public BSModal fatherModal;
+    List<string> repairCandidate = SqlServerCtl.ListEngineerName(true);
+    List<string> maintainCandidate = SqlServerCtl.ListEngineerName(false);
 
-     [Parameter]
-     public SparePart partInfo { get; set; }
+    [Parameter]
+    public SparePart partInfo { get; set; }
 
-     protected void Submit()
-     {
-         if (!Part2RecordForm.IsValid())
-         {
-             return;
-         }
+    protected void Submit()
+    {
+        if (!Part2RecordForm.IsValid())
+        {
+            return;
+        }
 
-         var RepairRecord = Part2RecordForm.GetValue<repairRecord>();
+        var RepairRecord = Part2RecordForm.GetValue<repairRecord>();
+        if (partInfo != null)
+        {
+            RepairRecord.SVWNumber = partInfo.SVWNumber;
+        }
 
-         _ = MessageBox.AlertAsync(RepairRecord.ToString());
-         SqlServerCtl.AddRepairRecord(RepairRecord);
-     }
+        _ = MessageBox.AlertAsync(RepairRecord.ToString());
+        SqlServerCtl.AddRepairRecord(RepairRecord);
+        Close();
+    }
 
-     public void Show()
-     {
-         Part2RecordModal.Show();
-         Part2RecordForm.MarkAsRequireRender();
-     }
-     public void Close()
-     {
-         Part2RecordModal.Hide();
-         ConfirmModal.Hide();
-     }
+    public void Show()
+    {
+        Part2RecordForm.MarkAsRequireRender();
+        Part2RecordModal.Show();
+        if (fatherModal != null)
+        {
+            fatherModal.Toggle();
+        }
+    }
+    public void Close()
+    {
+        Part2RecordModal.Hide();        
+        ConfirmModal.Hide();
+        if (fatherModal != null)
+        {
+            fatherModal.Show();
+        }
+    }
 }

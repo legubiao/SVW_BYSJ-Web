@@ -6,7 +6,7 @@
     @if (record != null)
     {
         <BSModalHeader OnClick="@(() =>RecordDetailModal.Hide())">维修单号：@record.orderNumber</BSModalHeader>
-        <BSModalBody>
+        <BSModalBody style="height: 32rem; overflow-y:scroll">
             <BSListGroup IsFlush="true">
                 <BSListGroupItem>
                     <BSRow>
@@ -57,7 +57,7 @@
                         <BSCol XS="Auto">维护日期：@record.maintainTime</BSCol>
                     </BSRow>
                 </BSListGroupItem>
-                @if (record.SVWNumber != null)
+                @if (record.SVWNumber == "NULL")
                 {
                     <BSListGroupItem>没有使用备件或返修件</BSListGroupItem>
                 }
@@ -76,11 +76,11 @@
     }
     <BSModalFooter>
         <BSButton Color="Color.Primary" @onclick="@(() => ConfirmModal.Show())">设置为已完成</BSButton>
-        <BSButton Color="Color.Secondary" @onclick="@(() => RecordDetailModal.Hide())">返回</BSButton>
+        <BSButton Color="Color.Secondary" @onclick="@(() => Close())">返回</BSButton>
     </BSModalFooter>
 </BSModal>
 
-<BSModal @ref="ConfirmModal" IsCentered="true">
+<BSModal @ref="ConfirmModal" IsCentered="true" Size="BlazorStrap.Size.Small">
     <BSModalHeader OnClick="@(() => ConfirmModal.Hide())">警告</BSModalHeader>
     <BSModalBody>
         <p>是否修改维修单状态？</p>
@@ -92,12 +92,14 @@
 </BSModal>
 
 
+
 @code {
     [Parameter]
     public repairRecord record { get; set; }
 
     BSModal RecordDetailModal;
     BSModal ConfirmModal;
+    public BSModal FatherModal;
     protected void SwitchRecordStatus()
     {
         SqlServerCtl.SwitchRecordStatus(record);
@@ -106,10 +108,18 @@
     public void Show()
     {
         RecordDetailModal.Show();
+        if (FatherModal != null)
+        {
+            FatherModal.Hide();
+        }
     }
     public void Close()
     {
         RecordDetailModal.Hide();
         ConfirmModal.Hide();
+        if (FatherModal != null)
+        {
+            FatherModal.Show();
+        }
     }
 }
