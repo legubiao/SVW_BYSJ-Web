@@ -1,0 +1,9 @@
+﻿@using Models
+@using Data
+<h3>RecordSearchResult</h3>
+
+@code {
+    [Parameter]
+    public string keyword { get; set; }
+    public List<repairRecord> resultList;
+}

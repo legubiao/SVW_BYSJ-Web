@@ -11,8 +11,7 @@ namespace SVW_BYSJ_WEB.Data
 {  
     public static class SqlServerCtl
     {
-        //获取新建工程师的ID
-        public static int newEngineerID()
+        public static int newEngineerID()                                                   //获取新建工程师的ID
         {
             string command = "select Max(ID) ID from 维护工程师";
             using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
@@ -25,8 +24,7 @@ namespace SVW_BYSJ_WEB.Data
                 return ID;
             }            
         }
-        //列出工程师
-        public static IList<Engineer> ListEngineer( bool isOn)
+        public static IList<Engineer> ListEngineer( bool isOn)                              //列出所有的在职或离职工程师
         {
             IList<Engineer> onListEngineer = new List<Engineer>();
             string command;
@@ -58,8 +56,7 @@ namespace SVW_BYSJ_WEB.Data
                 return onListEngineer;
             }            
         }       
-        //列出可用工程师的名单
-        public static List<string> ListEngineerName(bool MaintainOrRepair)
+        public static List<string> ListEngineerName(bool MaintainOrRepair)                  //列出可用的工程师的名单
         {
             List<string> nameList = new List<string>();
             string command;
@@ -85,12 +82,42 @@ namespace SVW_BYSJ_WEB.Data
             }
             
         }
-        //添加工程师
-        public static void AddEngineer(Engineer engineer)
+        public static void SwitchEngineerStatus(Engineer engineer)                          //切换工程师的职位状态
+        {
+            string command;
+            if (engineer.onWork)
+            {
+                command = "UPDATE 维护工程师 SET 是否在职 = 'False' WHERE ID = '" + engineer.ID + "'";
+            }
+            else
+            {
+                command = "UPDATE 维护工程师 SET 是否在职 = 'True' WHERE ID = '" + engineer.ID + "'";
+            }
+            ManipulateData(command);
+        }           
+        public static void AddEngineer(Engineer engineer)                                   //添加工程师
         {
             string command = "INSERT INTO 维护工程师(ID,姓名,车间,工厂,是否在职) " +
                 "VALUES("+engineer.ID+",'"+engineer.Name+"','"+engineer.Workshop+"','"+engineer.Group+ "','" + 1 + "')";
             ManipulateData(command);
+        }                   
+        public static Dictionary<string, int> GetEngineerIndex(Engineer engineer, string type)
+        {
+            Dictionary<string, int> partTypeIndex = new Dictionary<string, int>();
+            string command = "select " + type + ",count(" + type + ")as 次数 from " +
+                "(select * from 维护记录 where 维修责任人 = '"+engineer.Name+"' or " +
+                "保养责任人 = '" + engineer.Name + "') as a group by " + type;
+            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
+            {
+                sqlConn.Open();
+                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
+                SqlDataReader reader = sqlComm.ExecuteReader();
+                while (reader.Read())
+                {
+                    partTypeIndex.Add((string)reader[type], (int)reader["次数"]);
+                }
+            }
+            return partTypeIndex;
         }
 
         //搜寻备件记录

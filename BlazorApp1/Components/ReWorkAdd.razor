@@ -1,11 +1,11 @@
 ﻿@using Models
 @using Data
 
-<BSModal @ref="ReWorkAddModal">
+<BSModal @ref="ReWorkAddModal" IsCentered="true">
     @if (partInfo != null)
     {
         <BSModalHeader OnClick="@(() => ReWorkAddModal.Hide())">对备件 @partInfo.SVWNumber 进行返修</BSModalHeader>
-        <BSModalBody style="height: 35rem; overflow-y:scroll">
+        <BSModalBody style="height: 32rem; overflow-y:scroll">
             <BForm @ref="ReWorkAddForm" Inline="true">
                 <div class="card" style="padding-bottom:0;margin-bottom:10px">
                     <div class="card-body" style="padding-bottom:0">
@@ -66,6 +66,8 @@
 
     [Parameter]
     public SparePart partInfo { get; set; }
+    [Parameter]
+    public BSModal fatherModal { get; set; }
 
     protected void Submit()
     {
@@ -86,11 +88,13 @@
     {
         ReWorkAddForm.MarkAsRequireRender();
         ReWorkAddModal.Show();
+        fatherModal.Hide();
     }
 
     public void Close()
     {
         ReWorkAddModal.Hide();
         ConfirmModal.Hide();
+        fatherModal.Show();
     }
 }

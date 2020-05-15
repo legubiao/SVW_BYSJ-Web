@@ -26,7 +26,7 @@
                     <span class="oi oi-plus" aria-hidden="true" />
                 </BSButton>
                 <BSTooltip Target="AddRepairRecordButton" Placement="Placement.Top">新增备件</BSTooltip>
-                <BSButton Color="Color.Primary" @onclick="@(e => addRecordModal.Show())" Id="SearchRepairRecordButton">
+                <BSButton Color="Color.Primary" @onclick="@(e => recordSearch.Show())" Id="SearchRepairRecordButton">
                     <span class="oi oi-magnifying-glass" aria-hidden="true" />
                 </BSButton>
                 <BSTooltip Target="SearchRepairRecordButton" Placement="Placement.Top">查询备件</BSTooltip>
@@ -34,7 +34,12 @@
         </BSRow>       
         <BSTabSelectedContent />
     </BSTabGroup>
+
     <Part2Record @ref="addRecordModal"/>
+    <RecordSearch @ref="recordSearch" />
+   
+
 @code {
     Part2Record addRecordModal;
+    RecordSearch recordSearch;
 }

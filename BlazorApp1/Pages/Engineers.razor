@@ -3,17 +3,17 @@
 @using Data
 @using SVW_BYSJ_WEB.Components
 
-<BSTabGroup >
+<BSTabGroup>
     <BSRow>
         <BSCol XS="9">
             <BSTabList IsList="true">
-                <BSTab >
+                <BSTab  @ref="onListTab">
                     <BSTabLabel>在职人员</BSTabLabel>
                     <BSTabContent>
                         <BSCard CardType="CardType.Columns" style="margin-top:15px">
                             @foreach (var engineer in OnEngineers)
                             {
-                                <BSCard Color="Color.Dark" IsOutline="true" style="padding:0px">
+                                <BSCard Color="Color.Dark" IsOutline="true" style="padding:0px" @onclick="e=>CLickEngineer(engineer)">
                                     <BSCard CardType="CardType.Body" style="padding-bottom:5px;">
                                         <BSCard CardType="CardType.Title">
                                             <BSRow>
@@ -41,13 +41,13 @@
                         </BSCard>
                     </BSTabContent>
                 </BSTab>
-                <BSTab>
+                <BSTab @ref="offListTab">
                     <BSTabLabel>离职人员</BSTabLabel>
                     <BSTabContent >
                         <BSCard CardType="CardType.Columns" style="margin-top:15px">
                             @foreach (var engineer in OffEngineers)
                             {
-                                <BSCard Color="Color.Secondary" IsOutline="true" style="padding:0px">
+                                <BSCard Color="Color.Secondary" IsOutline="true" style="padding:0px" @onclick="e=>CLickEngineer(engineer)">
                                     <BSCard CardType="CardType.Body" style="padding-bottom:5px;">
                                         <BSCard CardType="CardType.Title">
                                             <BSRow>
@@ -89,15 +89,29 @@
 
 <EngineerAdd @ref="addEngineerModal"/>
 
+<EngineerDetail @ref=" engineerDetailModal" engineer="selectedEngineer" fatherPage="this"/>
+
 @code {
     private IList<Models.Engineer> OnEngineers = SqlServerCtl.ListEngineer(true);
     private IList<Models.Engineer> OffEngineers = SqlServerCtl.ListEngineer(false);
 
     EngineerAdd addEngineerModal;
-
+    EngineerDetail engineerDetailModal;
+    Engineer selectedEngineer;
+    BSTab onListTab;
+    BSTab offListTab;
+ 
     public void refreshData()
     {
         OnEngineers = SqlServerCtl.ListEngineer(true);
         OffEngineers = SqlServerCtl.ListEngineer(false);
+        onListTab.UpdateContent();
+        offListTab.UpdateContent();
+    }
+
+    void CLickEngineer(Engineer engineer)
+    {
+        selectedEngineer = engineer;
+        engineerDetailModal.Show();
     }
 }

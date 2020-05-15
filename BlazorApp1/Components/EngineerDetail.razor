@@ -1,5 +1,97 @@
-﻿<h3>EngineerDetail</h3>
+﻿@using Models
+@using Data
+@using SVW_BYSJ_WEB.Pages
+@using SVW_BYSJ_WEB.Charts
+
+    <BSModal @ref="EngineerDetailModal" ShowEvent="e=>updateChart()">
+        @if (engineer != null)
+        {
+            <BSModalHeader OnClick="@(() =>EngineerDetailModal.Hide())">详细信息</BSModalHeader>
+            <BSModalBody style="height: 32rem; overflow-y:scroll">
+                <BSListGroup IsFlush="true">
+                    <BSListGroupItem>
+                        <BSRow>
+                            <BSCol XS="6">ID：@engineer.ID</BSCol>
+                            <BSCol XS="6">姓名：@engineer.Name</BSCol>
+                        </BSRow>
+                    </BSListGroupItem>
+                    <BSListGroupItem>
+                        <BSRow>
+                            <BSCol XS="6">车间：@engineer.Workshop</BSCol>
+                            <BSCol XS="6">工厂：@engineer.Group</BSCol>
+                        </BSRow>
+                    </BSListGroupItem>
+                    <BSListItem>
+                        <PieChart header="维护类型分布" sourceData="@SqlServerCtl.GetEngineerIndex(engineer, "故障类型")"
+                                  @ref="typeIndexChart" Width="30" Height="20" />
+                        <Bar_Vertical header="维护区域分布" sourceData="@SqlServerCtl.GetEngineerIndex(engineer, "区域")"
+                                        @ref="areaIndexChart" Width="30" Height="20" />
+                        <Bar_Horizontal header="维护工位分布" sourceData="@SqlServerCtl.GetEngineerIndex(engineer, "工位")"
+                                        @ref="stationIndexChart" Width="30" Height="50" />
+                    </BSListItem>
+                </BSListGroup>
+                
+                
+            </BSModalBody>
+            <BSModalFooter>
+                @if (engineer.onWork == true)
+                {
+                    <BSButton Color="Color.Danger" @onclick="@(() => SwitchStatus())">解雇</BSButton>
+                }
+                else
+                {
+                    <BSButton Color="Color.Success" @onclick="@(() => SwitchStatus())">返聘</BSButton>
+                }
+                <BSButton Color="Color.Secondary" @onclick="@(() => Close())">返回</BSButton>
+            </BSModalFooter>        
+        }
+    </BSModal>
+
 
 @code {
+    BSModal EngineerDetailModal;
+    PieChart typeIndexChart;
+    Bar_Horizontal stationIndexChart;
+    Bar_Vertical areaIndexChart;
 
+    [Parameter]
+    public Engineer engineer { get; set; }
+    [Parameter]
+    public Engineers fatherPage { get; set; }
+
+
+    [Inject]
+    Blazui.Component.MessageBox MessageBox { get; set; }
+
+    public void Close()
+    {
+        EngineerDetailModal.Hide();
+    }
+
+    public void Show()
+    {
+        EngineerDetailModal.Show();
+    }
+
+    public void updateChart()
+    {
+        typeIndexChart.refresh();
+        stationIndexChart.refresh();
+        areaIndexChart.refresh();
+    }
+
+    public void SwitchStatus()
+    {
+        SqlServerCtl.SwitchEngineerStatus(engineer);
+        @if (engineer.onWork == true)
+        {
+            _ = MessageBox.AlertAsync("已成功解聘" + engineer.Name);
+        }
+        else
+        {
+            _ = MessageBox.AlertAsync("已成功返聘" + engineer.Name);
+        }
+        fatherPage.refreshData();
+        Close();
+    }
 }

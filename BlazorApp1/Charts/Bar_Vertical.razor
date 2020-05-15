@@ -1,0 +1,107 @@
+﻿@using ChartJs.Blazor.ChartJS.BarChart
+@using ChartJs.Blazor.ChartJS.BarChart.Axes
+@using ChartJs.Blazor.ChartJS.Common.Axes
+@using ChartJs.Blazor.ChartJS.Common.Axes.Ticks
+@using ChartJs.Blazor.ChartJS.Common.Properties
+@using ChartJs.Blazor.ChartJS.Common.Wrappers
+@using ChartJs.Blazor.Charts
+@using ChartJs.Blazor.Util
+@using Data
+
+<div class="card" style="margin:1rem">
+    <div class="card-header"> @header</div>
+    <div class="card-body">
+        <ChartJsBarChart @ref="partPropertyPieChart"
+                         Config="@_config"
+                         Width=@Width
+                         Height=@Height />
+    </div>
+</div>
+
+
+@code {
+    private BarConfig _config;
+    private ChartJsBarChart partPropertyPieChart;
+    private BSCard ChartCard;
+
+    [Parameter]
+    public string header { get; set; }
+    [Parameter]
+    public int Width { get; set; }
+    [Parameter]
+    public int Height { get; set; }
+    [Parameter]
+    public Dictionary<string, int> sourceData { get; set; }
+
+    public void refresh()
+    {
+        _config.Data.Labels.Clear();
+        _config.Data.Datasets.Clear();
+        addData();
+        partPropertyPieChart.Update();
+    }
+
+    void addData()
+    {
+        List<string> TypeName = new List<string>();
+        List<Int32Wrapper> TypeCount = new List<Int32Wrapper>();
+        List<string> BackgroudColorList = new List<string>();
+
+        foreach (KeyValuePair<string, int> typeData in sourceData)
+        {
+            TypeName.Add(typeData.Key);
+            TypeCount.Add(typeData.Value);
+            BackgroudColorList.Add(ColorUtil.RandomColorString());
+        }
+        _config.Data.Labels.AddRange(TypeName);
+
+        var _barDataSet = new BarDataset<Int32Wrapper>
+        {
+            Label = header,
+            BackgroundColor = BackgroudColorList.ToArray(),
+            BorderWidth = 0,
+            HoverBackgroundColor = ColorUtil.RandomColorString(),
+            HoverBorderColor = ColorUtil.RandomColorString(),
+            HoverBorderWidth = 1,
+            BorderColor = "#ffffff"
+        };
+
+        _barDataSet.AddRange(TypeCount);
+        _config.Data.Datasets.Add(_barDataSet);
+    }
+
+    protected override void OnInitialized()
+    {
+        _config = new BarConfig
+        {
+            Options = new BarOptions
+            {
+                Responsive = true,
+                Scales = new BarScales
+                {
+                    XAxes = new List<CartesianAxis>
+                {
+                        new BarCategoryAxis
+                        {
+                            BarPercentage = 0.5,
+                            BarThickness = BarThickness.Flex
+                        }
+                    },
+                    YAxes = new List<CartesianAxis>
+                {
+                        new BarLinearCartesianAxis
+                        {
+                            Ticks = new LinearCartesianTicks
+                            {
+                                BeginAtZero = true
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        addData();
+    }
+}
+

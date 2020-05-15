@@ -105,7 +105,7 @@
 </BSModal>
 
 <InStorageAdd partInfo="partInfo" @ref="InStorageAddModal"/>
-<ReWorkAdd partInfo="partInfo" @ref="ReWorkAddModal"/>
+<ReWorkAdd partInfo="partInfo" fatherModal="PartDetailModal" @ref="ReWorkAddModal"/>
 
 @code {
     BSModal PartDetailModal;
@@ -114,6 +114,7 @@
     Part2Record AddRecordModal;
     InStorageAdd InStorageAddModal;
     ReWorkAdd ReWorkAddModal;
+    
 
     [Parameter]
     public SparePart partInfo { get; set; }

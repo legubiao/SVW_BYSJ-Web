@@ -1,0 +1,57 @@
+﻿
+<BSModal @ref="SearchRecordModal">
+    <BSTabGroup>
+        <BSModalHeader OnClick="@(() => SearchRecordModal.Hide())">
+            <BSRow style="font:1rem arial,verdana; margin:0" Class="text-center">
+                <BSTabList IsList="true" IsPills="true">
+                    <BSTab>
+                        <BSTabLabel>故障内容</BSTabLabel>
+                        <BSTabContent>
+                            <div class="input-group card-body">
+                                <input type="text" class="form-control" placeholder="在此输入要查询的故障内容" @bind-value="keyword1">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button">查询</button>
+                                </div>
+                            </div>
+                        </BSTabContent>
+                    </BSTab>
+                    <BSTab>
+                        <BSTabLabel>工位</BSTabLabel>
+                        <BSTabContent>
+                            <div class="input-group card-body">
+                                <input type="text" class="form-control" placeholder="在此输入要查询的工位" @bind-value="keyword1">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button">查询</button>
+                                </div>
+                            </div>
+                        </BSTabContent>
+                    </BSTab>
+                    <BSTab>
+                        <BSTabLabel>维修单号</BSTabLabel>
+                        <BSTabContent>
+                            <div class="input-group card-body">
+                                <input type="text" class="form-control" placeholder="在此要查询的维修单号" @bind-value="keyword1">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button">查询</button>
+                                </div>
+                            </div>
+                        </BSTabContent>
+                    </BSTab>
+                </BSTabList>
+            </BSRow>
+        </BSModalHeader>
+        <BSModalBody style="padding:0">
+            <BSTabSelectedContent />
+        </BSModalBody>
+    </BSTabGroup>
+</BSModal>
+
+@code {
+    BSModal SearchRecordModal;
+    string keyword1;
+
+    public void Show()
+    {
+        SearchRecordModal.Show();
+    }
+}
