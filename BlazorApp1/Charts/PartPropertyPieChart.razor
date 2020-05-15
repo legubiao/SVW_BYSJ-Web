@@ -1,0 +1,74 @@
+﻿@using ChartJs.Blazor.Charts
+@using ChartJs.Blazor.ChartJS.PieChart
+@using ChartJs.Blazor.ChartJS.Common.Properties
+@using ChartJs.Blazor.Util
+@using Data
+
+
+<BSCard Color="Color.Dark" IsOutline="true">
+    <BSCard CardType="CardType.Header">备件属性分布图</BSCard>
+    <BSCard CardType="CardType.Body">
+        <ChartJsPieChart @ref="partPropertyPieChart" Config="@_config" Height="300" Width="250" />
+    </BSCard>
+</BSCard>
+
+
+
+@code {
+    private PieConfig _config;
+    private ChartJsPieChart partPropertyPieChart;
+    Dictionary<string, int> partTypeData = SqlServerCtl.GetPartPropertyIndex();
+
+    protected override void OnInitialized()
+    {
+        _config = new PieConfig
+        {
+            Options = new PieOptions
+            {
+                Responsive = true,
+                Animation = new ArcAnimation
+                {
+                    AnimateRotate = true,
+                    AnimateScale = true
+                }
+            }
+        };
+
+
+
+        List<string> TypeName = new List<string>();
+        List<double> TypeCount = new List<double>();
+        foreach (KeyValuePair<string, int> typeData in partTypeData)
+        {
+            TypeName.Add(typeData.Key);
+            TypeCount.Add((double)typeData.Value);
+        }
+        _config.Data.Labels.AddRange(TypeName);
+
+        var pieSet = new PieDataset
+        {
+            BackgroundColor = new[] {
+                ColorUtil.RandomColorString(),
+                ColorUtil.RandomColorString(),
+                ColorUtil.RandomColorString(),
+                ColorUtil.RandomColorString(),
+                ColorUtil.RandomColorString(),
+                ColorUtil.RandomColorString(),
+                ColorUtil.RandomColorString(),
+                ColorUtil.RandomColorString(),
+                ColorUtil.RandomColorString(),
+                ColorUtil.RandomColorString(),
+                ColorUtil.RandomColorString(),
+                ColorUtil.RandomColorString(),
+                ColorUtil.RandomColorString() },
+            BorderWidth = 0,
+            HoverBackgroundColor = ColorUtil.RandomColorString(),
+            HoverBorderColor = ColorUtil.RandomColorString(),
+            HoverBorderWidth = 1,
+            BorderColor = "#ffffff",
+        };
+
+        pieSet.Data.AddRange(TypeCount);
+        _config.Data.Datasets.Add(pieSet);
+    }
+}

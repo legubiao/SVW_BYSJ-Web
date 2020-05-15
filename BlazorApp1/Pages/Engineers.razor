@@ -1,99 +1,103 @@
 ﻿@page "/engineer"
 @using Models
 @using Data
-@inherits AddEngineerForm
+@using SVW_BYSJ_WEB.Components
 
-<BTab>
-    <BTabPanel Title="在职工程师">
-        <BSCard CardType="CardType.Columns">
-            @foreach (var engineer in OnEngineers)
-            {
-                <BSCard Color="Color.Dark" IsOutline="true" style="padding:0px">
-                    <BSCard CardType="CardType.Body" style="padding-bottom:5px;">
-                        <BSCard CardType="CardType.Title">
-                            <BSRow>
-                                <BSCol XS="6">@engineer.Name</BSCol>
-                                <BSCol XS="6" style="text-align:right">ID:@engineer.ID</BSCol>
-                            </BSRow>
+<BSTabGroup >
+    <BSRow>
+        <BSCol XS="9">
+            <BSTabList IsList="true">
+                <BSTab >
+                    <BSTabLabel>在职人员</BSTabLabel>
+                    <BSTabContent>
+                        <BSCard CardType="CardType.Columns" style="margin-top:15px">
+                            @foreach (var engineer in OnEngineers)
+                            {
+                                <BSCard Color="Color.Dark" IsOutline="true" style="padding:0px">
+                                    <BSCard CardType="CardType.Body" style="padding-bottom:5px;">
+                                        <BSCard CardType="CardType.Title">
+                                            <BSRow>
+                                                <BSCol XS="6">@engineer.Name</BSCol>
+                                                <BSCol XS="6" style="text-align:right">ID:@engineer.ID</BSCol>
+                                            </BSRow>
+                                        </BSCard>
+                                        <BSListGroup IsFlush="true" style="margin-bottom:0">
+                                            <BSListGroupItem>
+                                                <BSRow>
+                                                    <BSCol XS="6">车间：@engineer.Workshop</BSCol>
+                                                    <BSCol XS="6">工厂：@engineer.Group</BSCol>
+                                                </BSRow>
+                                            </BSListGroupItem>
+                                            <BSListGroupItem>
+                                                <BSRow>
+                                                    <BSCol XS="6">维护次数：@engineer.RepairTimes</BSCol>
+                                                    <BSCol XS="6">保养次数：@engineer.MaintainTimes</BSCol>
+                                                </BSRow>
+                                            </BSListGroupItem>
+                                        </BSListGroup>
+                                    </BSCard>
+                                </BSCard> 
+                            }
                         </BSCard>
-                        <BSListGroup IsFlush="true" style="margin-bottom:0">
-                            <BSListGroupItem>
-                                <BSRow>
-                                    <BSCol XS="6">车间：@engineer.Workshop</BSCol>
-                                    <BSCol XS="6">工厂：@engineer.Group</BSCol>
-                                </BSRow>
-                            </BSListGroupItem>
-                            <BSListGroupItem>
-                                <BSRow>
-                                    <BSCol XS="6">维护次数：@engineer.RepairTimes</BSCol>
-                                    <BSCol XS="6">保养次数：@engineer.MaintainTimes</BSCol>
-                                </BSRow>
-                            </BSListGroupItem>
-                        </BSListGroup>
-                    </BSCard>
-                </BSCard>
-            }
-        </BSCard>
-    </BTabPanel>
-
-    <BTabPanel Title="添加工程师">
-        <BForm Style="width: 400px;" @ref="addEngForm">
-            <BFormItem TValue="string" Name="@nameof(Models.Engineer.Name)" Label="姓名" IsRequired="true">
-                <BInput TValue="string"></BInput>
-            </BFormItem>
-            <BFormItem TValue="int" Name="@nameof(Models.Engineer.ID)" Label="ID" IsRequired="true">
-                <BInput Value="Data.SqlServerCtl.newEngineerID()" IsDisabled="true"></BInput>
-            </BFormItem>
-            <BFormItem TValue="Models.workshop" Label="车间" Name="@nameof(Models.Engineer.Workshop)" IsRequired="true">
-                <BSelect TValue="Models.workshop" Placeholder="请选择车间">
-                </BSelect>
-            </BFormItem>
-            <BFormItem TValue="Models.group" Label="组别" Name="@nameof(Models.Engineer.Group)" IsRequired="true">
-                <BSelect TValue="Models.group" Placeholder="请选择组别">
-                </BSelect>
-            </BFormItem>
-            <BFormActionItem>
-                <BButton  OnClick="e=>Submit()">立即添加</BButton>
-                <BButton OnClick="e=>Reset()">重置</BButton>
-            </BFormActionItem>
-        </BForm>
-    </BTabPanel>
-
-    <BTabPanel Title="离职工程师">
-        <BSCard CardType="CardType.Columns">
-            @foreach (var engineer in OffEngineers)
-            {
-                <BSCard Color="Color.Secondary" IsOutline="true" style="padding:0px">
-                    <BSCard CardType="CardType.Body" style="padding-bottom:5px;">
-                        <BSCard CardType="CardType.Title">
-                            <BSRow>
-                                <BSCol XS="6">@engineer.Name</BSCol>
-                                <BSCol XS="6" style="text-align:right">ID:@engineer.ID</BSCol>
-                            </BSRow>
+                    </BSTabContent>
+                </BSTab>
+                <BSTab>
+                    <BSTabLabel>离职人员</BSTabLabel>
+                    <BSTabContent >
+                        <BSCard CardType="CardType.Columns" style="margin-top:15px">
+                            @foreach (var engineer in OffEngineers)
+                            {
+                                <BSCard Color="Color.Secondary" IsOutline="true" style="padding:0px">
+                                    <BSCard CardType="CardType.Body" style="padding-bottom:5px;">
+                                        <BSCard CardType="CardType.Title">
+                                            <BSRow>
+                                                <BSCol XS="6">@engineer.Name</BSCol>
+                                                <BSCol XS="6" style="text-align:right">ID:@engineer.ID</BSCol>
+                                            </BSRow>
+                                        </BSCard>
+                                        <BSListGroup IsFlush="true" style="margin-bottom:0">
+                                            <BSListGroupItem>
+                                                <BSRow>
+                                                    <BSCol XS="6">车间：@engineer.Workshop</BSCol>
+                                                    <BSCol XS="6">工厂：@engineer.Group</BSCol>
+                                                </BSRow>
+                                            </BSListGroupItem>
+                                            <BSListGroupItem>
+                                                <BSRow>
+                                                    <BSCol XS="6">维护次数：@engineer.RepairTimes</BSCol>
+                                                    <BSCol XS="6">保养次数：@engineer.MaintainTimes</BSCol>
+                                                </BSRow>
+                                            </BSListGroupItem>
+                                        </BSListGroup>
+                                    </BSCard>
+                                </BSCard>
+                            }
                         </BSCard>
-                        <BSListGroup IsFlush="true" style="margin-bottom:0">
-                            <BSListGroupItem>
-                                <BSRow>
-                                    <BSCol XS="6">车间：@engineer.Workshop</BSCol>
-                                    <BSCol XS="6">工厂：@engineer.Group</BSCol>
-                                </BSRow>
-                            </BSListGroupItem>
-                            <BSListGroupItem>
-                                <BSRow>
-                                    <BSCol XS="6">维护次数：@engineer.RepairTimes</BSCol>
-                                    <BSCol XS="6">保养次数：@engineer.MaintainTimes</BSCol>
-                                </BSRow>
-                            </BSListGroupItem>
-                        </BSListGroup>
-                    </BSCard>
-                </BSCard>
-            }
-        </BSCard>
-    </BTabPanel>
-</BTab>
+                    </BSTabContent>
+                </BSTab>
+            </BSTabList>
+        </BSCol>
+        <BSCol XS="3" class="text-right">
+            <BSButton Color="Color.Primary" @onclick="@(e => addEngineerModal.Show())" Id="AddEngineerButton">
+                <span class="oi oi-plus" aria-hidden="true" />
+            </BSButton>
+            <BSTooltip Target="AddEngineerButton" Placement="Placement.Top">新增工程师信息</BSTooltip>
+        </BSCol>
+    </BSRow>
+    <BSTabSelectedContent />
+</BSTabGroup>
+
+<EngineerAdd @ref="addEngineerModal"/>
 
 @code {
     private IList<Models.Engineer> OnEngineers = SqlServerCtl.ListEngineer(true);
     private IList<Models.Engineer> OffEngineers = SqlServerCtl.ListEngineer(false);
+
+    EngineerAdd addEngineerModal;
+
+    public void refreshData()
+    {
+        OnEngineers = SqlServerCtl.ListEngineer(true);
+        OffEngineers = SqlServerCtl.ListEngineer(false);
+    }
 }
-  

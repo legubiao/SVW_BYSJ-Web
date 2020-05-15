@@ -1,0 +1,68 @@
+﻿@using Models
+@using Data
+
+<BSModal @ref="AddEngineerModal">
+    <BSModalHeader OnClick="@(() => AddEngineerModal.Hide())">新增工程师档案</BSModalHeader>
+    <BSModalBody>
+        <BForm Style="width: 400px;" @ref="addEngForm">
+            <BFormItem TValue="string" Name="@nameof(Models.Engineer.Name)" Label="姓名" IsRequired="true">
+                <BInput TValue="string"></BInput>
+            </BFormItem>
+            <BFormItem TValue="int" Name="@nameof(Models.Engineer.ID)" Label="ID" IsRequired="true">
+                <BInput Value="Data.SqlServerCtl.newEngineerID()" IsDisabled="true"></BInput>
+            </BFormItem>
+            <BFormItem TValue="Models.workshop" Label="车间" Name="@nameof(Models.Engineer.Workshop)" IsRequired="true">
+                <BSelect TValue="Models.workshop" Placeholder="请选择车间">
+                </BSelect>
+            </BFormItem>
+            <BFormItem TValue="Models.group" Label="组别" Name="@nameof(Models.Engineer.Group)" IsRequired="true">
+                <BSelect TValue="Models.group" Placeholder="请选择组别">
+                </BSelect>
+            </BFormItem>
+        </BForm>
+    </BSModalBody>
+    <BSModalFooter>
+        <BSButton Color="Color.Primary" @onclick="@(e=>Submit())">立即添加</BSButton>
+        <BSButton Color="Color.Primary" @onclick="@(e=>Reset())">重置表单</BSButton>
+        <BSButton Color="Color.Secondary" @onclick="@(e=>Close())">返回</BSButton>
+    </BSModalFooter>
+</BSModal>
+
+@code {
+    BSModal AddEngineerModal;
+
+    SVW_BYSJ_WEB.Pages.Engineers fatherPage;
+
+    [Inject]
+    Blazui.Component.MessageBox MessageBox { get; set; }
+
+    protected BForm addEngForm;
+    protected void Submit()
+    {
+        if (!addEngForm.IsValid())
+        {
+            return;
+        }
+
+        var engineer = addEngForm.GetValue<Engineer>();
+        _ = MessageBox.AlertAsync(engineer.ToString());
+        SqlServerCtl.AddEngineer(engineer);
+        fatherPage.refreshData();
+        Close();
+    }
+
+    protected void Reset()
+    {
+        addEngForm.Reset();
+    }
+
+    public void Show()
+    {
+        AddEngineerModal.Show();
+    }
+
+    public void Close()
+    {
+        AddEngineerModal.Hide();
+    }
+}

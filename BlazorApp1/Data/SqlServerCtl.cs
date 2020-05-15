@@ -193,8 +193,54 @@ namespace SVW_BYSJ_WEB.Data
             }
             ManipulateData(command);
         }
-
-
+        public static Dictionary<string, int> GetPartTypeIndex()
+        {
+            Dictionary<string, int> partTypeIndex = new Dictionary<string, int>();
+            string command = "select 物料类型,count(物料类型)as 次数 from 备件信息表 group by 物料类型";
+            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
+            {
+                sqlConn.Open();
+                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
+                SqlDataReader reader = sqlComm.ExecuteReader();
+                while (reader.Read())
+                {
+                    partTypeIndex.Add((string)reader["物料类型"], (int)reader["次数"]);
+                }
+            }
+            return partTypeIndex;
+        }
+        public static Dictionary<string, int> GetPartPropertyIndex()
+        {
+            Dictionary<string, int> partTypeIndex = new Dictionary<string, int>();
+            string command = "select 物料属性,count(物料属性)as 次数 from 备件信息表 group by 物料属性";
+            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
+            {
+                sqlConn.Open();
+                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
+                SqlDataReader reader = sqlComm.ExecuteReader();
+                while (reader.Read())
+                {
+                    partTypeIndex.Add((string)reader["物料属性"], (int)reader["次数"]);
+                }
+            }
+            return partTypeIndex;
+        }
+        public static Dictionary<string, int> GetPartStatusIndex()
+        {
+            Dictionary<string, int> partTypeIndex = new Dictionary<string, int>();
+            string command = "select 物料状态,count(物料状态)as 次数 from 备件信息表 group by 物料状态";
+            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
+            {
+                sqlConn.Open();
+                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
+                SqlDataReader reader = sqlComm.ExecuteReader();
+                while (reader.Read())
+                {
+                    partTypeIndex.Add((string)reader["物料状态"], (int)reader["次数"]);
+                }
+            }
+            return partTypeIndex;
+        }
         //列出已完成维修单的计数表
         public static List<ModeCount> GetRecordCount()
         {
