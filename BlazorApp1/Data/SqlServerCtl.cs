@@ -375,7 +375,7 @@ namespace SVW_BYSJ_WEB.Data
         public static Dictionary<string, int> GetTimeSumByDate()                //获取月份内失效时间统计
 
         {
-            string command = "select TOP 10 sum(故障修理时间)'总时间',year(维护日期) '年',month(维护日期)'月'  from 维护记录 group by year(维护日期),month(维护日期) order by year(维护日期),month(维护日期)";
+            string command = "select 总时间,年,月 from 修理时间TOP10月份 order by 年,月";
             Dictionary<string, int> partTypeIndex = new Dictionary<string, int>();
             using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
             {
@@ -389,7 +389,7 @@ namespace SVW_BYSJ_WEB.Data
             }
             return partTypeIndex;
         }
-        public static Dictionary<string, int> GetTimeSumByDate                  //获取月份内失效时间统计
+        public static Dictionary<string, int> GetTimeSumByDate                  //获取时间间隔内失效时间统计
             (DateTime date1,DateTime date2)                
 
         {
