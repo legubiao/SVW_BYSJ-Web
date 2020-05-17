@@ -4,7 +4,7 @@
 <BSModal @ref="ReWorkAddModal" IsCentered="true">
     @if (partInfo != null)
     {
-        <BSModalHeader OnClick="@(() => ReWorkAddModal.Hide())">对备件 @partInfo.SVWNumber 进行返修</BSModalHeader>
+        <BSModalHeader OnClick="@(() => Close())">对备件 @partInfo.SVWNumber 进行返修</BSModalHeader>
         <BSModalBody style="height: 32rem; overflow-y:scroll">
             <BForm @ref="ReWorkAddForm" Inline="true">
                 <div class="card" style="padding-bottom:0;margin-bottom:10px">
@@ -41,7 +41,7 @@
     }
     <BSModalFooter>
         <BSButton Color="Color.Primary" @onclick="@(() => ConfirmModal.Show())">添加返修件</BSButton>
-        <BSButton Color="Color.Secondary" @onclick="@(() => ReWorkAddModal.Hide())">放弃添加</BSButton>
+        <BSButton Color="Color.Secondary" @onclick="@(() => Close())">放弃添加</BSButton>
     </BSModalFooter>
 </BSModal>
 
@@ -86,9 +86,9 @@
 
     public void Show()
     {
-        ReWorkAddForm.MarkAsRequireRender();
-        ReWorkAddModal.Show();
         fatherModal.Hide();
+        ReWorkAddForm.MarkAsRequireRender();
+        ReWorkAddModal.Show();       
     }
 
     public void Close()

@@ -27,9 +27,13 @@
     public int Height { get; set; }
     [Parameter]
     public Dictionary<string, int> sourceData { get; set; }
+    [Parameter]
+    public int MaxCount { get; set; }
 
     public void refresh()
     {
+        _config.Data.Datasets.Clear();
+        _config.Data.Labels.Clear();
         SetData();
         partPropertyPieChart.Update();
     }
@@ -39,13 +43,21 @@
         List<string> TypeName = new List<string>();
         List<double> TypeCount = new List<double>();
         List<string> BackgroudColorList = new List<string>();
+
+
         foreach (KeyValuePair<string, int> typeData in sourceData)
         {
             TypeName.Add(typeData.Key);
             TypeCount.Add((double)typeData.Value);
             BackgroudColorList.Add(ColorUtil.RandomColorString());
         }
-        _config.Data.Labels.Clear();
+        if (MaxCount != 0)
+        {
+            TypeName = TypeName.Take(MaxCount).ToList();
+            TypeCount = TypeCount.Take(MaxCount).ToList();
+            BackgroudColorList = BackgroudColorList.Take(MaxCount).ToList();
+        }
+
         _config.Data.Labels.AddRange(TypeName);
 
         var pieSet = new PieDataset
@@ -59,7 +71,6 @@
         };
 
         pieSet.Data.AddRange(TypeCount);
-        _config.Data.Datasets.Clear();
         _config.Data.Datasets.Add(pieSet);
     }
 
@@ -78,28 +89,6 @@
             }
         };
 
-        List<string> TypeName = new List<string>();
-        List<double> TypeCount = new List<double>();
-        List<string> BackgroudColorList = new List<string>();
-        foreach (KeyValuePair<string, int> typeData in sourceData)
-        {
-            TypeName.Add(typeData.Key);
-            TypeCount.Add((double)typeData.Value);
-            BackgroudColorList.Add(ColorUtil.RandomColorString());
-        }
-        _config.Data.Labels.AddRange(TypeName);
-
-        var pieSet = new PieDataset
-        {
-            BackgroundColor = BackgroudColorList.ToArray(),
-            BorderWidth = 0,
-            HoverBackgroundColor = ColorUtil.RandomColorString(),
-            HoverBorderColor = ColorUtil.RandomColorString(),
-            HoverBorderWidth = 1,
-            BorderColor = "#ffffff"
-        };
-
-        pieSet.Data.AddRange(TypeCount);
-        _config.Data.Datasets.Add(pieSet);
+        SetData();
     }
 }

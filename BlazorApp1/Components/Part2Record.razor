@@ -123,7 +123,10 @@
     BForm Part2RecordForm;
     BSModal Part2RecordModal;
     BSModal ConfirmModal;
-    public BSModal fatherModal;
+
+    [Parameter]
+    public BSModal fatherModal{ get; set; }
+
     List<string> repairCandidate = SqlServerCtl.ListEngineerName(true);
     List<string> maintainCandidate = SqlServerCtl.ListEngineerName(false);
 
@@ -150,16 +153,16 @@
 
     public void Show()
     {
-        Part2RecordForm.MarkAsRequireRender();
-        Part2RecordModal.Show();
         if (fatherModal != null)
         {
-            fatherModal.Toggle();
+            fatherModal.Hide();
         }
+        Part2RecordForm.MarkAsRequireRender();
+        Part2RecordModal.Show();
     }
     public void Close()
     {
-        Part2RecordModal.Hide();        
+        Part2RecordModal.Hide();
         ConfirmModal.Hide();
         if (fatherModal != null)
         {

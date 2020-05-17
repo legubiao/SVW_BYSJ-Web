@@ -2,18 +2,18 @@
 @using Models
 
     <BSModal @ref="SummaryDetailModal" >
-        @if (failureMode != null)
+        @if (recordList != null)
         {
-            <BSModalHeader OnClick="@(() =>SummaryDetailModal.Hide())">维护策略：@failureDetail</BSModalHeader>
+            <BSModalHeader OnClick="@(() =>Close())">工位：@station</BSModalHeader>
             <BSModalBody>
                 @foreach (var record in recordList)
                 {
-                    <BSCard Color="Color.Info" IsOutline="true" @onclick="e=>ClickItem(record)" style="margin-bottom:5px;padding:0px">
-                        <BSCard CardType="CardType.Body" style="padding:2px">
-                            <BSRow>
-                                <BSCol XS="6">@record.RepairMeasures</BSCol>
-                                <BSCol XS="6">工位： @record.Station</BSCol>
-                            </BSRow>
+                    <BSCard Color="Color.Info" IsOutline="true" @onclick="e=>ClickItem(record)" style="margin-bottom:0.5rem;padding:0px">
+                        <BSCard CardType="CardType.Header" class="text-dark text-center" style="padding:0.3rem">
+                            @record.FailureDetail
+                        </BSCard>
+                        <BSCard CardType="CardType.Body" style="padding-top:0.3rem;padding-bottom:0.3rem">
+                            @record.RepairMeasures
                         </BSCard>
                     </BSCard>
                 }
@@ -24,30 +24,32 @@
         </BSModalFooter>
     </BSModal>
 
-    <RecordDetail record="selectedRecord" @ref="RecordDetailModal" />
+    <RecordDetail record="selectedRecord" @ref="RecordDetailModal" FatherModal="SummaryDetailModal"/>
 
 @code {
-    public string failureMode;
-    public string failureDetail;
+    [Parameter]
+    public string station { get; set; }
+    [Parameter]
+    public BSModal fatherModal { get; set; }
+    [Parameter]
+    public IList<Models.repairRecord> recordList { get; set; }
 
     repairRecord selectedRecord;
     RecordDetail RecordDetailModal;
     BSModal SummaryDetailModal;
-    public BSModal fatherModal;
-    public IList<Models.repairRecord> recordList;
+
+    
 
     private void ClickItem(repairRecord record)
     {
         selectedRecord = record;
-        RecordDetailModal.FatherModal = SummaryDetailModal;
         RecordDetailModal.Show();
     }
 
     public void Show()
-    {
-        this.recordList = SqlServerCtl.GetRecordBySummary(failureMode,failureDetail);
-        SummaryDetailModal.Show();
+    {       
         fatherModal.Hide();
+        SummaryDetailModal.Show();
     }
     void Close()
     {

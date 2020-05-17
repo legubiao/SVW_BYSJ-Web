@@ -1,49 +1,116 @@
 ﻿@using Models
 @using Data
-    <BSModal @ref="ModeSummaryModal">
-        @if (failureMode != null)
-        {
-            <BSModalHeader OnClick="@(() =>ModeSummaryModal.Hide())">@failureMode</BSModalHeader>
-            <BSModalBody style="height: 35rem; overflow-y:scroll">
-                    @foreach (var strategy in strategies)
-                    {                      
-                        <BSCard Color="Color.Secondary" IsOutline="true" @onclick="e=>ClickItem(strategy.FailureDetail)" style="margin-bottom:5px;padding:0px">
-                            <BSCard CardType="CardType.Body" style="padding:7px">
-                                <BSRow>
-                                    <BSCol XS="9">@strategy.FailureDetail</BSCol>
-                                    <BSCol XS="3">次数： @strategy.strategyCount</BSCol>
-                                </BSRow>
-                            </BSCard>
-                        </BSCard>
-                    }
-            </BSModalBody>
-        }
-        <BSModalFooter>
-            <BSButton Color="Color.Secondary" @onclick="@(() => ModeSummaryModal.Hide())">返回</BSButton>
-        </BSModalFooter>
-    </BSModal>
+@using SVW_BYSJ_WEB.Charts
+<BSModal @ref="ModeSummaryModal" ShowEvent="e=>updateChart()">
+    <BSTabGroup>
+        <BSModalHeader OnClick="@(() =>ModeSummaryModal.Hide())">
+            <BSRow style="font:1rem arial,verdana; margin:0" Class="text-center">
+                <BSTabList IsList="true" IsPills="true">
+                    <BSTab>
+                        <BSTabLabel>次数</BSTabLabel>
+                        <BSTabContent>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-striped" data-show-header="true">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>工位</th>
+                                            <th>总维护次数</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (CountByMode != null)
+                                        {
+                                            @foreach (var Record in CountByMode)
+                                            {
+                                                <tr @onclick="e=>ClickItem(Record.Key)">
+                                                    <td>@Record.Key</td>
+                                                    <td>@Record.Value</td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </BSTabContent>
+                    </BSTab>
+                    <BSTab>
+                        <BSTabLabel>维护时间</BSTabLabel>
+                        <BSTabContent>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-striped" data-show-header="true">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>工位</th>
+                                            <th>总时间（Min）</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (TimeByMode != null)
+                                        {
+                                            @foreach (var Record in TimeByMode)
+                                            {
+                                                <tr @onclick="e=>ClickItem(Record.Key)">
+                                                    <td>@Record.Key</td>
+                                                    <td>@Record.Value</td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </BSTabContent>
+                    </BSTab>
+                    <BSTab @ref="chartTab">
+                        <BSTabLabel>时间分布</BSTabLabel>
+                        <BSTabContent>
+                            <PieChart header="工位-时间分布" sourceData="TimeByMode"
+                                       Width="25" Height="30" MaxCount="20" />
+                        </BSTabContent>
+                    </BSTab>
+                </BSTabList>
+            </BSRow>
+        </BSModalHeader>
+        <BSModalBody>
+            <BSTabSelectedContent />
+        </BSModalBody>
+    </BSTabGroup>
+    <BSModalFooter>
+        <BSButton Color="Color.Secondary" @onclick="@(() => ModeSummaryModal.Hide())">返回</BSButton>
+    </BSModalFooter>
+</BSModal>
 
-    <RecordSummary3 @ref="summaryDetail"/>
+<RecordSummary3 @ref="summaryDetail" fatherModal="ModeSummaryModal"
+                station="@selectedStation" recordList="selectedList" />
 
 @code {
-    public string failureMode;
-
-    IList<Strategy> strategies { get; set; }
-
     BSModal ModeSummaryModal;
     RecordSummary3 summaryDetail;
+    BSTab chartTab;
+    
+    [Parameter]
+    public string failureMode { get; set; }
+    string selectedStation;
+    IList<repairRecord> selectedList;
+    [Parameter]
+    public Dictionary<string, int> TimeByMode { get; set; }
+    [Parameter]
+    public Dictionary<string, int> CountByMode { get; set; }
+    
 
-    void ClickItem(string failureDetail)
+    void ClickItem(string station)
     {
-        summaryDetail.failureDetail = failureDetail;
-        summaryDetail.failureMode = failureMode;
-        summaryDetail.fatherModal = ModeSummaryModal;
+        selectedStation = station;
+        selectedList = SqlServerCtl.GetRecordByStation(failureMode, station);
         summaryDetail.Show();
+    }
+
+    void updateChart()
+    {
+        chartTab.UpdateContent();
     }
 
     public void Show()
     {
-        this.strategies = SqlServerCtl.ListStrategy(failureMode);
         ModeSummaryModal.Show();
     }
 }

@@ -2,8 +2,68 @@
 @using Data
 <h3>RecordSearchResult</h3>
 
+<BSModal @ref="ResultModal">
+    <BSModalHeader OnClick="@(() => Close())">
+        查询结果：@keyword
+    </BSModalHeader>
+    <BSModalBody>
+        <div class="table-responsive">
+            <table class="table table-hover table-striped" data-show-header="true">
+                <thead class="thead-light">
+                    <tr>
+                        <th>维修单号</th>
+                        <th>耗时</th>
+                        <th>日期</th>
+                        <th>工位</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (resultList != null)
+                    {
+                        @foreach (var Record in resultList)
+                        {
+                            <tr @onclick="e=>ClickItem(Record)">
+                                <td>@Record.orderNumber</td>
+                                <td>@Record.MaintanenceTime</td>
+                                <td>@Record.maintainTime</td>
+                                <td>@Record.Station</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </BSModalBody>
+</BSModal>
+
+<RecordDetail record="selectedRecord" @ref="RecordDetailModal" FatherModal="ResultModal"/>
+
 @code {
+    BSModal ResultModal;
+    RecordDetail RecordDetailModal;
     [Parameter]
     public string keyword { get; set; }
-    public List<repairRecord> resultList;
+    [Parameter]
+    public IList<repairRecord> resultList { get; set; }
+    [Parameter]
+    public BSModal fatherModal { get; set; }
+    repairRecord selectedRecord;
+
+
+    private void ClickItem(repairRecord record)
+    {
+        selectedRecord = record;
+        RecordDetailModal.Show();
+    }
+
+    public void Show()
+    {
+        fatherModal.Hide();
+        ResultModal.Show();
+    }
+    public void Close()
+    {
+        fatherModal.Show();
+        ResultModal.Hide();
+    }
 }

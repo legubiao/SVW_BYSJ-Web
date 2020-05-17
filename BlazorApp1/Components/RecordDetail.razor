@@ -2,83 +2,90 @@
 @using Data
 
 
-<BSModal @ref="RecordDetailModal">
-    @if (record != null)
-    {
-        <BSModalHeader OnClick="@(() =>RecordDetailModal.Hide())">维修单号：@record.orderNumber</BSModalHeader>
-        <BSModalBody style="height: 32rem; overflow-y:scroll">
-            <BSListGroup IsFlush="true">
-                <BSListGroupItem>
-                    <BSRow>
-                        <BSCol XS="6">工厂：@record.Group</BSCol>
-                        <BSCol XS="6">车间：@record.Workshop</BSCol>
-                    </BSRow>
-                    <BSRow>
-                        <BSCol XS="6">区域：@record.Area</BSCol>
-                        <BSCol XS="6">工位：@record.Station</BSCol>
-                    </BSRow>
-                </BSListGroupItem>
-                <BSListGroupItem>
-                    <BSRow>
-                        <BSCol XS="3">故障类型</BSCol>
-                        <BSCol XS="9">@record.FailureMode</BSCol>
-                    </BSRow>
-                    <BSRow>
-                        <BSCol XS="3">故障内容</BSCol>
-                        <BSCol XS="9">@record.FailureDetail</BSCol>
-                    </BSRow>
-                </BSListGroupItem>
-                <BSListGroupItem>
-                    <BSRow>
-                        <BSCol XS="3">修理措施</BSCol>
-                        <BSCol XS="9">@record.RepairMeasures</BSCol>
-                    </BSRow>
-                    <BSRow>
-                        <BSCol XS="3">长期措施</BSCol>
-                        <BSCol XS="9">@record.LongtimeMeasures</BSCol>
-                    </BSRow>
-                </BSListGroupItem>
-                <BSListGroupItem>
-                    <BSRow>
-                        <BSCol XS="6">维修责任人：@record.RepairPeople</BSCol>
-                        <BSCol XS="6">保养责任人：@record.MaintanencePeople</BSCol>
-                    </BSRow>
-                </BSListGroupItem>
-                <BSListGroupItem>
-                    <BSRow>
-                        <BSCol XS="6">故障修理时间：@record.MaintanenceTime 分钟</BSCol>
-                        <BSCol XS="6">影响主线时间：@record.ShutdownTime 分钟</BSCol>
-                    </BSRow>
-                </BSListGroupItem>
-                <BSListGroupItem>
-                    <BSRow>
-                        <BSCol XS="6">填写人：@record.writtenby</BSCol>
-                        <BSCol XS="Auto">填写时间：@record.writtenTime</BSCol>
-                        <BSCol XS="Auto">维护日期：@record.maintainTime</BSCol>
-                    </BSRow>
-                </BSListGroupItem>
-                @if (record.SVWNumber == "NULL")
+    <BSModal @ref="RecordDetailModal" IsCentered="true">
+        @if (record != null)
+        {
+            <BSModalHeader OnClick="@(() =>Close())">维修单号：@record.orderNumber</BSModalHeader>
+            <BSModalBody>
+                <BSListGroup IsFlush="true">
+                    <BSListGroupItem>
+                        <BSRow>
+                            <BSCol XS="6">工厂：@record.Group</BSCol>
+                            <BSCol XS="6">车间：@record.Workshop</BSCol>
+                        </BSRow>
+                        <BSRow>
+                            <BSCol XS="6">区域：@record.Area</BSCol>
+                            <BSCol XS="6">工位：@record.Station</BSCol>
+                        </BSRow>
+                    </BSListGroupItem>
+                    <BSListGroupItem>
+                        <BSRow>
+                            <BSCol XS="3">故障类型</BSCol>
+                            <BSCol XS="9">@record.FailureMode</BSCol>
+                        </BSRow>
+                        <BSRow>
+                            <BSCol XS="3">故障内容</BSCol>
+                            <BSCol XS="9">@record.FailureDetail</BSCol>
+                        </BSRow>
+                    </BSListGroupItem>
+                    <BSListGroupItem>
+                        <BSRow>
+                            <BSCol XS="3">修理措施</BSCol>
+                            <BSCol XS="9">@record.RepairMeasures</BSCol>
+                        </BSRow>
+                        <BSRow>
+                            <BSCol XS="3">长期措施</BSCol>
+                            <BSCol XS="9">@record.LongtimeMeasures</BSCol>
+                        </BSRow>
+                    </BSListGroupItem>
+                    <BSListGroupItem>
+                        <BSRow>
+                            <BSCol XS="6">维修责任人：@record.RepairPeople</BSCol>
+                            <BSCol XS="6">保养责任人：@record.MaintanencePeople</BSCol>
+                        </BSRow>
+                    </BSListGroupItem>
+                    <BSListGroupItem>
+                        <BSRow>
+                            <BSCol XS="6">故障修理时间：@record.MaintanenceTime 分钟</BSCol>
+                            <BSCol XS="6">影响主线时间：@record.ShutdownTime 分钟</BSCol>
+                        </BSRow>
+                    </BSListGroupItem>
+                    <BSListGroupItem>
+                        <BSRow>
+                            <BSCol XS="6">填写人：@record.writtenby</BSCol>
+                            <BSCol XS="Auto">填写时间：@record.writtenTime</BSCol>
+                            <BSCol XS="Auto">维护日期：@record.maintainTime</BSCol>
+                        </BSRow>
+                    </BSListGroupItem>
+                    @if (record.SVWNumber == "NULL")
+                    {
+                        <BSListGroupItem>没有使用备件或返修件</BSListGroupItem>
+                    }
+                    else
+                    {
+                        <BSListGroupItem>SVW物料号：@record.SVWNumber</BSListGroupItem>
+                        <BSListGroupItem>备件消耗数量：@record.SparePartNo</BSListGroupItem>
+                        <BSListGroupItem>返修件消耗数量：@record.ReworkNo</BSListGroupItem>
+                    }
+                    @if (record.remark != "NULL")
+                    {
+                        <BSListGroupItem>备注：@record.remark</BSListGroupItem>
+                    }
+                </BSListGroup>
+            </BSModalBody>
+            <BSModalFooter>
+                @if (record.isFinished)
                 {
-                    <BSListGroupItem>没有使用备件或返修件</BSListGroupItem>
+                    <BSButton Color="Color.Danger" @onclick="@(e => ConfirmModal.Show())">设置为未完成</BSButton>
                 }
                 else
                 {
-                    <BSListGroupItem>SVW物料号：@record.SVWNumber</BSListGroupItem>
-                    <BSListGroupItem>备件消耗数量：@record.SparePartNo</BSListGroupItem>
-                    <BSListGroupItem>返修件消耗数量：@record.ReworkNo</BSListGroupItem>
+                    <BSButton Color="Color.Success" @onclick="@(e => ConfirmModal.Show())">设置为已完成</BSButton>
                 }
-                @if (record.remark != "NULL")
-                {
-                    <BSListGroupItem>备注：@record.remark</BSListGroupItem>
-                }
-            </BSListGroup>
-        </BSModalBody>
-    }
-    <BSModalFooter>
-        <BSButton Color="Color.Primary" @onclick="@(() => ConfirmModal.Show())">设置为已完成</BSButton>
-        <BSButton Color="Color.Secondary" @onclick="@(() => Close())">返回</BSButton>
-    </BSModalFooter>
-</BSModal>
+                <BSButton Color="Color.Secondary" @onclick="@(() => Close())">返回</BSButton>
+            </BSModalFooter>
+        }
+    </BSModal>
 
 <BSModal @ref="ConfirmModal" IsCentered="true" Size="BlazorStrap.Size.Small">
     <BSModalHeader OnClick="@(() => ConfirmModal.Hide())">警告</BSModalHeader>
@@ -96,10 +103,12 @@
 @code {
     [Parameter]
     public repairRecord record { get; set; }
+    [Parameter]
+    public BSModal FatherModal { get; set; }
 
     BSModal RecordDetailModal;
     BSModal ConfirmModal;
-    public BSModal FatherModal;
+    
     protected void SwitchRecordStatus()
     {
         SqlServerCtl.SwitchRecordStatus(record);
@@ -107,16 +116,16 @@
     }
     public void Show()
     {
-        RecordDetailModal.Show();
         if (FatherModal != null)
         {
             FatherModal.Hide();
         }
+        RecordDetailModal.Show();        
     }
     public void Close()
-    {
+    {        
         RecordDetailModal.Hide();
-        ConfirmModal.Hide();
+        ConfirmModal.Hide();        
         if (FatherModal != null)
         {
             FatherModal.Show();

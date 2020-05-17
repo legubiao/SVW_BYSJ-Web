@@ -57,7 +57,8 @@
 
     [Parameter]
     public SparePart partInfo { get; set; }
-    public BSModal fatherModal;
+    [Parameter]
+    public BSModal fatherModal { get; set; }
 
     protected void Submit()
     {
@@ -76,9 +77,9 @@
 
     public void Show()
     {
+        fatherModal.Hide();
         InStorageAddForm.MarkAsRequireRender();
         InStorageAddModal.Show();
-        fatherModal.Hide();
     }
 
     public void Close()

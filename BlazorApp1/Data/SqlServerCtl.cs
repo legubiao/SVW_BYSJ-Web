@@ -11,7 +11,7 @@ namespace SVW_BYSJ_WEB.Data
 {  
     public static class SqlServerCtl
     {
-        public static int newEngineerID()                                                   //获取新建工程师的ID
+        public static int newEngineerID()                                       //获取新建工程师的ID
         {
             string command = "select Max(ID) ID from 维护工程师";
             using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
@@ -24,7 +24,7 @@ namespace SVW_BYSJ_WEB.Data
                 return ID;
             }            
         }
-        public static IList<Engineer> ListEngineer( bool isOn)                              //列出所有的在职或离职工程师
+        public static IList<Engineer> ListEngineer( bool isOn)                  //列出所有的在职或离职工程师
         {
             IList<Engineer> onListEngineer = new List<Engineer>();
             string command;
@@ -56,7 +56,7 @@ namespace SVW_BYSJ_WEB.Data
                 return onListEngineer;
             }            
         }       
-        public static List<string> ListEngineerName(bool MaintainOrRepair)                  //列出可用的工程师的名单
+        public static List<string> ListEngineerName(bool MaintainOrRepair)      //列出可用的工程师的名单
         {
             List<string> nameList = new List<string>();
             string command;
@@ -82,7 +82,7 @@ namespace SVW_BYSJ_WEB.Data
             }
             
         }
-        public static void SwitchEngineerStatus(Engineer engineer)                          //切换工程师的职位状态
+        public static void SwitchEngineerStatus(Engineer engineer)              //切换工程师的职位状态
         {
             string command;
             if (engineer.onWork)
@@ -95,33 +95,23 @@ namespace SVW_BYSJ_WEB.Data
             }
             ManipulateData(command);
         }           
-        public static void AddEngineer(Engineer engineer)                                   //添加工程师
+        public static void AddEngineer(Engineer engineer)                       //添加工程师
         {
             string command = "INSERT INTO 维护工程师(ID,姓名,车间,工厂,是否在职) " +
                 "VALUES("+engineer.ID+",'"+engineer.Name+"','"+engineer.Workshop+"','"+engineer.Group+ "','" + 1 + "')";
             ManipulateData(command);
         }                   
-        public static Dictionary<string, int> GetEngineerIndex(Engineer engineer, string type)
+        public static Dictionary<string, int> GetEngineerIndex                  //获取单个工程师的业绩数据
+            (Engineer engineer, string type)
         {
-            Dictionary<string, int> partTypeIndex = new Dictionary<string, int>();
-            string command = "select " + type + ",count(" + type + ")as 次数 from " +
+            string command = "select " + type + " as 参数,count(" + type + ")as 次数 from " +
                 "(select * from 维护记录 where 维修责任人 = '"+engineer.Name+"' or " +
                 "保养责任人 = '" + engineer.Name + "') as a group by " + type;
-            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
-            {
-                sqlConn.Open();
-                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
-                SqlDataReader reader = sqlComm.ExecuteReader();
-                while (reader.Read())
-                {
-                    partTypeIndex.Add((string)reader[type], (int)reader["次数"]);
-                }
-            }
-            return partTypeIndex;
+            return getDictionary(command);
         }
 
-        //搜寻备件记录
-        public static IList<SparePart> SearchParts(string keyword,bool isDescription)
+        public static IList<SparePart> SearchParts                              //搜寻备件记录
+            (string keyword,bool isDescription)
         {
             List<SparePart> spareParts = new List<SparePart>();
             string command;
@@ -169,8 +159,7 @@ namespace SVW_BYSJ_WEB.Data
             }
             
         }
-        //添加备件记录
-        public static void AddPartInfo(SparePart sparePart)
+        public static void AddPartInfo(SparePart sparePart)                     //添加新备件信息
         {
             string command = "Insert into 备件信息表(物料生成日期,DC物料号,SVW物料号,[中/英文描述/规格型]," +
                 "备件制造商,设备制造商,[设备编号（机器号）],图号,计量单位,ABC码,计划员码,最小安全库存," +
@@ -183,14 +172,12 @@ namespace SVW_BYSJ_WEB.Data
                 + sparePart.IsSafety + "','" + sparePart.ProducingArea +"','"+sparePart.price+ "')";
             ManipulateData(command);
         }
-        //删除备件记录
-        public static void DeletePartInfo(String SVWNumber)
+        public static void DeletePartInfo(String SVWNumber)                     //删除备件信息
         {
             string command = "Delete from 备件信息表 where SVW物料号 = '" + SVWNumber + "'";
             ManipulateData(command);
         }
-        //修改备件的部分数据
-        public static void UpdatePartInfo(SparePart sparePart)
+        public static void UpdatePartInfo(SparePart sparePart)                  //修改备件的部分数据
         {
             string command = "UPDATE 备件信息表 SET [中/英文描述/规格型] = '" + sparePart.Description+
                 "',设备制造商='"+sparePart.DeviceProducer+
@@ -205,9 +192,8 @@ namespace SVW_BYSJ_WEB.Data
                 "',物料属性='" + sparePart.PartProperty +
                 "' WHERE SVW物料号 = '" + sparePart.SVWNumber + "'";
             ManipulateData(command);
-        }
-        //切换备件的安全或不安全状态
-        public static void SwitchPartSafety(SparePart sparePart)
+        }        
+        public static void SwitchPartSafety(SparePart sparePart)                //切换备件的安全或不安全状态
         {
             string command;
             if (sparePart.IsSafety)
@@ -220,10 +206,24 @@ namespace SVW_BYSJ_WEB.Data
             }
             ManipulateData(command);
         }
-        public static Dictionary<string, int> GetPartTypeIndex()
+        public static Dictionary<string, int> GetPartTypeIndex()                //获取备件各个类型的数量
+        {
+            string command = "select 物料类型 as 参数,count(物料类型)as 次数 from 备件信息表 group by 物料类型";
+            return getDictionary(command);
+        }
+        public static Dictionary<string, int> GetPartPropertyIndex()            //获取备件各个属性的数量
+        {
+            string command = "select 物料属性 as 参数,count(物料属性)as 次数 from 备件信息表 group by 物料属性";
+            return getDictionary(command);
+        }
+        public static Dictionary<string, int> GetPartStatusIndex()              //获取备件各个状态的数量
+        {          
+            string command = "select 物料状态 as 参数,count(物料状态)as 次数 from 备件信息表 group by 物料状态";
+            return getDictionary(command);
+        }
+        static Dictionary<string, int> getDictionary(string command)
         {
             Dictionary<string, int> partTypeIndex = new Dictionary<string, int>();
-            string command = "select 物料类型,count(物料类型)as 次数 from 备件信息表 group by 物料类型";
             using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
             {
                 sqlConn.Open();
@@ -231,45 +231,13 @@ namespace SVW_BYSJ_WEB.Data
                 SqlDataReader reader = sqlComm.ExecuteReader();
                 while (reader.Read())
                 {
-                    partTypeIndex.Add((string)reader["物料类型"], (int)reader["次数"]);
+                    partTypeIndex.Add((string)reader["参数"], (int)reader["次数"]);
                 }
             }
             return partTypeIndex;
         }
-        public static Dictionary<string, int> GetPartPropertyIndex()
-        {
-            Dictionary<string, int> partTypeIndex = new Dictionary<string, int>();
-            string command = "select 物料属性,count(物料属性)as 次数 from 备件信息表 group by 物料属性";
-            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
-            {
-                sqlConn.Open();
-                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
-                SqlDataReader reader = sqlComm.ExecuteReader();
-                while (reader.Read())
-                {
-                    partTypeIndex.Add((string)reader["物料属性"], (int)reader["次数"]);
-                }
-            }
-            return partTypeIndex;
-        }
-        public static Dictionary<string, int> GetPartStatusIndex()
-        {
-            Dictionary<string, int> partTypeIndex = new Dictionary<string, int>();
-            string command = "select 物料状态,count(物料状态)as 次数 from 备件信息表 group by 物料状态";
-            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
-            {
-                sqlConn.Open();
-                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
-                SqlDataReader reader = sqlComm.ExecuteReader();
-                while (reader.Read())
-                {
-                    partTypeIndex.Add((string)reader["物料状态"], (int)reader["次数"]);
-                }
-            }
-            return partTypeIndex;
-        }
-        //列出已完成维修单的计数表
-        public static List<ModeCount> GetRecordCount()
+
+        public static List<ModeCount> GetRecordModeCount()                      //获取已完成维修单的计数表
         {
             List<ModeCount> summaryCount = new List<ModeCount>();
             string command = "select * from 故障单计数";
@@ -305,8 +273,7 @@ namespace SVW_BYSJ_WEB.Data
                 return summaryCount;
             }    
         }
-        //列出维修单
-        public static IList<repairRecord> ListRepairRecord(bool isOn)
+        public static IList<repairRecord> ListRepairRecord(bool isOn)           //列出所有已完成或未完成的维修单
         {
             IList<repairRecord> recordList = new List<repairRecord>();
             string command;
@@ -318,44 +285,9 @@ namespace SVW_BYSJ_WEB.Data
             {
                 command = "Select * from 维护记录 where 故障单完成情况 = 0";   //未完成
             }
-
-            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
-            {
-                sqlConn.Open();
-                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
-                SqlDataReader reader = sqlComm.ExecuteReader();
-                while (reader.Read())
-                {
-                    repairRecord record = new repairRecord();
-                    record.orderNumber = (string)reader["维修单号"];
-                    record.maintainTime = (DateTime)reader["维护日期"];
-                    record.Group = (group)Enum.Parse(typeof(group), (string)reader["工厂"]);
-                    record.Workshop = (workshop)Enum.Parse(typeof(workshop), (string)reader["车间"]);
-                    record.Area = (string)reader["区域"];
-                    record.Station = (string)reader["工位"];
-                    record.FailureMode = (failureMode)Enum.Parse(typeof(failureMode), (string)reader["故障类型"]);
-                    record.FailureDetail = (string)reader["故障内容"];
-                    record.RepairMeasures = (string)reader["修理措施"];
-                    record.LongtimeMeasures = (string)reader["长期措施"];
-                    record.MaintanenceTime = (int)reader["故障修理时间"];
-                    record.RepairPeople = (string)reader["维修责任人"];
-                    record.MaintanencePeople = (string)reader["保养责任人"];
-                    record.ShutdownTime = (int)reader["影响主线时间"];
-                    record.writtenby = (string)reader["填写人"];
-                    record.writtenTime = (DateTime)reader["填写时间"];
-                    record.SVWNumber = (string)reader["SVW物料号"];
-                    record.SparePartNo = (int)reader["备件消耗数量"];
-                    record.ReworkNo = (int)reader["返修件消耗数量"];
-                    record.isFinished = (bool)reader["故障单完成情况"];
-                    record.remark = (string)reader["备注"];
-                    recordList.Add(record);
-                }
-                return recordList;
-            }
-            
+            return GetRecord(command);
         }        
-        //添加维修单
-        public static void AddRepairRecord(repairRecord record)
+        public static void AddRepairRecord(repairRecord record)                 //新建维修单
         {
             string command = "Insert into 维护记录(维修单号,维护日期,工厂,车间,区域,工位,故障类型,故障内容," +
                 "修理措施,长期措施,故障修理时间,维修责任人,保养责任人,影响主线时间,填写人,填写时间,SVW物料号," +
@@ -383,8 +315,7 @@ namespace SVW_BYSJ_WEB.Data
                + record.remark + "')";
             ManipulateData(command);
         }
-        //切换维修单的完成与未完成状态
-        public static void SwitchRecordStatus(repairRecord record)
+        public static void SwitchRecordStatus(repairRecord record)              //切换维修单的完成与未完成状态
         {
             string command;
             if (record.isFinished)
@@ -397,8 +328,7 @@ namespace SVW_BYSJ_WEB.Data
             }
             ManipulateData(command);
         }
-        //列出特定失效模式的Summary
-        public static IList<Strategy> ListStrategy(string FailureMode)
+        public static IList<Strategy> ListStrategy(string FailureMode)          //获取特定故障模式的数量
         {
             IList<Strategy> strategies = new List<Strategy>();
             string command1 = "select 故障内容,count(故障内容)as 记录条数 from 维护记录 where 故障类型 = '" + FailureMode + "' group by 故障内容";
@@ -417,10 +347,57 @@ namespace SVW_BYSJ_WEB.Data
                 return strategies;
             }
         }
-        public static IList<repairRecord> GetRecordBySummary(string FailureMode,string FailureDetail)
+        public static Dictionary<string,int> GetStationCountByMode              //获取特定故障模式下某失效模式的数量
+            (string FailureMode)
+        {
+            string command = "select 工位 as 参数,count(工位)as 次数 from 维护记录 where 故障类型 = '" + FailureMode + "' group by 工位 order by 次数 DESC";
+            return getDictionary(command);
+        }
+        public static Dictionary<string, int> GetStationTimeSumByMode           //获取特定故障模式下某失效模式的数量
+            (string FailureMode)
+        {
+            string command = "select 工位 as 参数,sum(故障修理时间)as 次数 from 维护记录 where " +
+                "故障类型 = '" + FailureMode + "' group by 工位 order by 次数 DESC";
+            return getDictionary(command);
+        }
+
+        public static IList<repairRecord> GetRecordBySummary(string FailureMode,//根据故障模式和故障细节搜索维修单
+            string FailureDetail)
         {
             IList<repairRecord> recordList = new List<repairRecord>();
             string command = "select * from 维护记录 where 故障类型 = '" + FailureMode + "' AND 故障内容='" + FailureDetail + "'";
+            return GetRecord(command);
+        }
+        public static IList<repairRecord> GetRecordByStation                    //根据故障模式和工位搜索维修单
+            (string Mode,string Station)
+        {
+            IList<repairRecord> recordList = new List<repairRecord>();
+            string command = "select * from 维护记录 where 故障类型 = '" + Mode + "' AND 工位='" + Station + "'";
+            return GetRecord(command);
+        }
+        public static string newRepairRecordNumber()                            //获取新维修单的维修单号
+        {
+            string command = "SELECT count(*)as count from 维护记录";
+            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
+            {
+                sqlConn.Open();
+                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
+                SqlDataReader reader = sqlComm.ExecuteReader();
+                reader.Read();
+                int ID = (int)reader["count"] + 1000001;
+                return "MD"+ID;
+            }
+        }
+        public static IList<repairRecord> SearchRecord                          //根据关键字搜索维修单
+            (string keyword,string type)
+        {
+            IList<repairRecord> recordList = new List<repairRecord>();
+            string command = "select * from 维护记录 where "+type+" like '%" + keyword + "%'"; ;
+            return GetRecord(command);
+        }
+        static IList<repairRecord> GetRecord(string command)
+        {
+            IList<repairRecord> recordList = new List<repairRecord>();
             using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
             {
                 sqlConn.Open();
@@ -451,26 +428,12 @@ namespace SVW_BYSJ_WEB.Data
                     record.isFinished = (bool)reader["故障单完成情况"];
                     record.remark = (string)reader["备注"];
                     recordList.Add(record);
-                }
-                return recordList;
+                }                
             }
-        }
-        public static string newRepairRecordNumber()
-        {
-            string command = "SELECT count(*)as count from 维护记录";
-            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
-            {
-                sqlConn.Open();
-                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
-                SqlDataReader reader = sqlComm.ExecuteReader();
-                reader.Read();
-                int ID = (int)reader["count"] + 1000001;
-                return "MD"+ID;
-            }
+            return recordList;
         }
 
-
-        public static void AddInStorageRecord(InStorageRecord record)
+        public static void AddInStorageRecord(InStorageRecord record)           //新建补货记录
         {
             string command = "INSERT INTO 补货记录(入库单号,SVW物料号,入库日期,入库数量,填写人,填写日期,备注) " +
                 "VALUES(" + record.InStorageNumber + ",'" 
@@ -482,7 +445,7 @@ namespace SVW_BYSJ_WEB.Data
                 + record.remark +  "')";
             ManipulateData(command);
         }
-        public static int newInStorageNumber()
+        public static int newInStorageNumber()                                  //获取新补货记录的单号
         {
             string command = "select Max(入库单号) 入库单号 from 补货记录";
             using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
@@ -495,8 +458,7 @@ namespace SVW_BYSJ_WEB.Data
                 return ID;
             }
         }
-
-        public static void AddReWorkRecord(ReWorkRecord record)
+        public static void AddReWorkRecord(ReWorkRecord record)                 //新建返修记录
         {
             string command = "INSERT INTO 返修件表(编号,工厂,SVW物料号,存放位置,补充数量,补充日期,填写人,填写日期,备注) " +
                 "VALUES(" + record.ReWorkNumber + ",'"
@@ -510,7 +472,7 @@ namespace SVW_BYSJ_WEB.Data
                 + record.remark + "')";
             ManipulateData(command);
         }
-        public static int newReWorkNumber()
+        public static int newReWorkNumber()                                     //获取新返修记录的单号
         {
             string command = "select Max(编号) 编号 from 返修件表";
             using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))

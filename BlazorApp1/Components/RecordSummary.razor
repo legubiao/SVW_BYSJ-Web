@@ -19,16 +19,20 @@
         </BSCard>
     </div>
 
-<RecordSummary2  @ref="modeSummary" />
+<RecordSummary2  @ref="modeSummary" failureMode="@selectedMode" 
+                TimeByMode="TimeByMode" CountByMode="CountByMode"/>
 
 @code {
-    List<ModeCount> ModeCounts = SqlServerCtl.GetRecordCount();
+    List<ModeCount> ModeCounts = SqlServerCtl.GetRecordModeCount();
     RecordSummary2 modeSummary;
     string selectedMode;
+    public Dictionary<string, int> TimeByMode;
+    public Dictionary<string, int> CountByMode;
     void ClickItem(string mode)
     {
         this.selectedMode = mode;
-        modeSummary.failureMode = mode;
+        TimeByMode = SqlServerCtl.GetStationTimeSumByMode(mode);
+        CountByMode = SqlServerCtl.GetStationCountByMode(mode);
         modeSummary.Show();
     }
 }

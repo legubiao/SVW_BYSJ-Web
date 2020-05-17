@@ -90,7 +90,7 @@
 </BSModal>
 
 <PartInfoModify partInfo="partInfo" detailModal="PartDetailModal" @ref="ModifyModal"/>
-<Part2Record partInfo="partInfo" @ref="AddRecordModal"/>
+<Part2Record partInfo="partInfo" @ref="AddRecordModal" fatherModal="PartDetailModal"/>
 
 
 <BSModal @ref="ConfirmDeleteModal" IsCentered="true" Size="BlazorStrap.Size.Small">
@@ -104,7 +104,7 @@
     </BSModalFooter>
 </BSModal>
 
-<InStorageAdd partInfo="partInfo" @ref="InStorageAddModal"/>
+<InStorageAdd partInfo="partInfo" @ref="InStorageAddModal" fatherModal="PartDetailModal"/>
 <ReWorkAdd partInfo="partInfo" fatherModal="PartDetailModal" @ref="ReWorkAddModal"/>
 
 @code {
@@ -129,7 +129,5 @@
     public void Show()
     {        
         PartDetailModal.Show();
-        InStorageAddModal.fatherModal = PartDetailModal;
-        AddRecordModal.fatherModal = PartDetailModal;
     }
 }

@@ -1,4 +1,6 @@
-﻿
+﻿@using Models
+@using Data
+
 <BSModal @ref="SearchRecordModal">
     <BSTabGroup>
         <BSModalHeader OnClick="@(() => SearchRecordModal.Hide())">
@@ -10,7 +12,7 @@
                             <div class="input-group card-body">
                                 <input type="text" class="form-control" placeholder="在此输入要查询的故障内容" @bind-value="keyword1">
                                 <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="button">查询</button>
+                                    <button class="btn btn-outline-secondary" type="button" @onclick="SearchByFailureDetail">查询</button>
                                 </div>
                             </div>
                         </BSTabContent>
@@ -19,9 +21,9 @@
                         <BSTabLabel>工位</BSTabLabel>
                         <BSTabContent>
                             <div class="input-group card-body">
-                                <input type="text" class="form-control" placeholder="在此输入要查询的工位" @bind-value="keyword1">
+                                <input type="text" class="form-control" placeholder="在此输入要查询的工位" @bind-value="keyword2">
                                 <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="button">查询</button>
+                                    <button class="btn btn-outline-secondary" type="button" @onclick="SearchByStation">查询</button>
                                 </div>
                             </div>
                         </BSTabContent>
@@ -30,9 +32,9 @@
                         <BSTabLabel>维修单号</BSTabLabel>
                         <BSTabContent>
                             <div class="input-group card-body">
-                                <input type="text" class="form-control" placeholder="在此要查询的维修单号" @bind-value="keyword1">
+                                <input type="text" class="form-control" placeholder="在此要查询的维修单号" @bind-value="keyword3">
                                 <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="button">查询</button>
+                                    <button class="btn btn-outline-secondary" type="button" @onclick="SearchByRepairNumber">查询</button>
                                 </div>
                             </div>
                         </BSTabContent>
@@ -46,9 +48,53 @@
     </BSTabGroup>
 </BSModal>
 
+<RecordSearchResult fatherModal="SearchRecordModal" 
+                    resultList="RecordList" 
+                    keyword="@selectedkeyword"
+                    @ref="resultModal"/>
+
 @code {
     BSModal SearchRecordModal;
     string keyword1;
+    string keyword2;
+    string keyword3;
+    string selectedkeyword;
+    private IList<repairRecord> RecordList;
+    RecordSearchResult resultModal;
+    [Inject]
+    MessageService Message { get; set; }
+
+    private void SearchByFailureDetail()
+    {
+        RecordList = SqlServerCtl.SearchRecord(keyword1, "故障内容");
+        selectedkeyword = keyword1;
+        ShowMessage();
+    }
+    private void SearchByStation()
+    {
+        RecordList = SqlServerCtl.SearchRecord(keyword2, "工位");
+        selectedkeyword = keyword2;
+        ShowMessage();
+    }
+    private void SearchByRepairNumber()
+    {
+        RecordList = SqlServerCtl.SearchRecord(keyword3, "维修单号");
+        selectedkeyword = keyword3;
+        ShowMessage();
+        
+    }
+    private void ShowMessage()
+    {
+        if (RecordList.Count != 0)
+        {
+            Message.Show("共搜索到" + RecordList.Count + "条符合条件的记录", MessageType.Success);
+            resultModal.Show();
+        }
+            else
+        {
+            Message.Show("没有符合条件的记录", MessageType.Warning);
+        }
+    }
 
     public void Show()
     {
