@@ -51,11 +51,12 @@
             TypeCount.Add((double)typeData.Value);
             BackgroudColorList.Add(ColorUtil.RandomColorString());
         }
-        if (MaxCount != 0)
+        if (MaxCount != 0 && sourceData.Count > MaxCount)
         {
             TypeName = TypeName.Take(MaxCount).ToList();
             TypeCount = TypeCount.Take(MaxCount).ToList();
             BackgroudColorList = BackgroudColorList.Take(MaxCount).ToList();
+            header = header + " 前" + MaxCount + "项";
         }
 
         _config.Data.Labels.AddRange(TypeName);

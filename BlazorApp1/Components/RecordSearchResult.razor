@@ -1,6 +1,5 @@
 ﻿@using Models
 @using Data
-<h3>RecordSearchResult</h3>
 
 <BSModal @ref="ResultModal">
     <BSModalHeader OnClick="@(() => Close())">
@@ -25,7 +24,7 @@
                             <tr @onclick="e=>ClickItem(Record)">
                                 <td>@Record.orderNumber</td>
                                 <td>@Record.MaintanenceTime</td>
-                                <td>@Record.maintainTime</td>
+                                <td>@Record.maintainTime.ToString("d")</td>
                                 <td>@Record.Station</td>
                             </tr>
                         }

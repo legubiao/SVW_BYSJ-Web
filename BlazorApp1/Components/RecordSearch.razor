@@ -7,7 +7,7 @@
             <BSRow style="font:1rem arial,verdana; margin:0" Class="text-center">
                 <BSTabList IsList="true" IsPills="true">
                     <BSTab>
-                        <BSTabLabel>故障内容</BSTabLabel>
+                        <BSTabLabel>故障</BSTabLabel>
                         <BSTabContent>
                             <div class="input-group card-body">
                                 <input type="text" class="form-control" placeholder="在此输入要查询的故障内容" @bind-value="keyword1">
@@ -29,12 +29,23 @@
                         </BSTabContent>
                     </BSTab>
                     <BSTab>
-                        <BSTabLabel>维修单号</BSTabLabel>
+                        <BSTabLabel>单号</BSTabLabel>
                         <BSTabContent>
                             <div class="input-group card-body">
                                 <input type="text" class="form-control" placeholder="在此要查询的维修单号" @bind-value="keyword3">
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="button" @onclick="SearchByRepairNumber">查询</button>
+                                </div>
+                            </div>
+                        </BSTabContent>
+                    </BSTab>
+                    <BSTab>
+                        <BSTabLabel>日期</BSTabLabel>
+                        <BSTabContent>
+                            <div class="input-group card-body">                               
+                                <BDatePicker @ref="DatePicker" DateChanged="e=>date=(DateTime)DatePicker.Date" />
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button" @onclick="SearchByDate">查询</button>
                                 </div>
                             </div>
                         </BSTabContent>
@@ -60,6 +71,8 @@
     string keyword3;
     string selectedkeyword;
     private IList<repairRecord> RecordList;
+    BDatePicker DatePicker;
+    DateTime date;
     RecordSearchResult resultModal;
     [Inject]
     MessageService Message { get; set; }
@@ -81,8 +94,15 @@
         RecordList = SqlServerCtl.SearchRecord(keyword3, "维修单号");
         selectedkeyword = keyword3;
         ShowMessage();
-        
     }
+
+    private void SearchByDate()
+    {
+        selectedkeyword = date.ToString("d");
+        RecordList = SqlServerCtl.SearchRecord(date);
+        ShowMessage();
+    }
+
     private void ShowMessage()
     {
         if (RecordList.Count != 0)
@@ -90,7 +110,7 @@
             Message.Show("共搜索到" + RecordList.Count + "条符合条件的记录", MessageType.Success);
             resultModal.Show();
         }
-            else
+        else
         {
             Message.Show("没有符合条件的记录", MessageType.Warning);
         }

@@ -8,15 +8,10 @@
 @using ChartJs.Blazor.Util
 @using Data
 
-<div class="card" style="margin:1rem">
-    <div class="card-header"> @header</div>
-    <div class="card-body">
         <ChartJsBarChart @ref="partPropertyPieChart"
                          Config="@_config"
                          Width=@Width
                          Height=@Height />
-    </div>
-</div>
 
 
 @code {
@@ -70,7 +65,6 @@
                 BackgroudColorList.Add(ColorUtil.RandomColorString());
             }
         }
-
         if (MaxCount != 0 && sourceData.Count > MaxCount)
         {
             TypeName = TypeName.Take(MaxCount).ToList();
@@ -79,8 +73,6 @@
             header = header + " 前" + MaxCount + "项";
         }
         _config.Data.Labels.AddRange(TypeName);
-
-
 
         var _barDataSet = new BarDataset<Int32Wrapper>
         {
@@ -107,7 +99,7 @@
                 Scales = new BarScales
                 {
                     XAxes = new List<CartesianAxis>
-                {
+            {
                         new BarCategoryAxis
                         {
                             BarPercentage = 0.5,
@@ -115,7 +107,7 @@
                         }
                     },
                     YAxes = new List<CartesianAxis>
-                {
+            {
                         new BarLinearCartesianAxis
                         {
                             Ticks = new LinearCartesianTicks

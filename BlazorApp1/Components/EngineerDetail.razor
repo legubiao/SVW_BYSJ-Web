@@ -23,11 +23,11 @@
                     </BSListGroupItem>
                     <BSListItem>
                         <PieChart header="维护类型分布" sourceData="@SqlServerCtl.GetEngineerIndex(engineer, "故障类型")"
-                                  @ref="typeIndexChart" Width="30" Height="20" />
+                                  @ref="typeIndexChart" Width="30" Height="20" MaxCount="10"/>
                         <Bar_Vertical header="维护区域分布" sourceData="@SqlServerCtl.GetEngineerIndex(engineer, "区域")"
-                                        @ref="areaIndexChart" Width="30" Height="20" />
+                                        @ref="areaIndexChart" Width="30" Height="20" MaxCount="10"/>
                         <Bar_Horizontal header="维护工位分布" sourceData="@SqlServerCtl.GetEngineerIndex(engineer, "工位")"
-                                        @ref="stationIndexChart" Width="30" Height="50" />
+                                        @ref="stationIndexChart" Width="30" Height="30" MaxCount="10"/>
                     </BSListItem>
                 </BSListGroup>
                 

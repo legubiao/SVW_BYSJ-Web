@@ -1,0 +1,61 @@
+﻿@using SVW_BYSJ_WEB.Charts
+@using Data
+
+    <div class="card-group">
+        <Bar_Horizontal header="维护时长 TOP20 工位" Width="20" Height="25" sourceData="SqlServerCtl.GetStationCount()" />
+        <Bar_Horizontal header="维护次数 TOP20 工位" Width="20" Height="25" sourceData="SqlServerCtl.GetStationTimeSum()" />        
+    </div>
+    <Bar_Vertical header="维护时长 VS 月份" Width="30" Height="15" sourceData="SqlServerCtl.GetTimeSumByDate()" isSingleColor="true" />
+    <div class="card" style="margin:1rem">        
+        <div class="card-body">
+            <h5 class="card-title">显示日期间隔内的维护时长数据</h5>
+            <BDatePicker @ref="startPicker" DateChanged="dateChange1" Placeholder="开始日期" />
+            <BDatePicker @ref="endPicker" DateChanged="dateChange2" Placeholder="结束日期" />
+            <BSButton Color="Color.Primary" @onclick="(e => setChart())" Id="SearchRepairRecordButton">
+                <span class="oi oi-reload" aria-hidden="true" />
+            </BSButton>
+
+            @if (startPicker != null && endPicker != null)
+            {
+                @if (date_Time_data != null)
+                {
+                    <Bar_withoutCard header="维护时长 VS 天" Width="30" Height="15" sourceData="date_Time_data" @ref="date_time_chart"
+                                     isSingleColor="true" />
+                }
+            }
+        </div>
+    </div>
+@code {
+    BDatePicker startPicker;
+    BDatePicker endPicker;
+    DateTime date1;
+    DateTime date2;
+    Dictionary<string, int> date_Time_data;
+    Bar_withoutCard date_time_chart;
+
+    void dateChange1()
+    {
+        date1 = (DateTime)startPicker.Date;
+        if (date1 <= date2)
+        {
+            date_Time_data = SqlServerCtl.GetTimeSumByDate(date1, date2);
+        }
+        setChart();
+    }
+    void dateChange2()
+    {
+        date2 = (DateTime)endPicker.Date;
+        if (date1 <= date2)
+        {
+            date_Time_data = SqlServerCtl.GetTimeSumByDate(date1, date2);
+        }
+        setChart();
+    }
+    private void setChart()
+    {
+        if (date_time_chart != null)
+        {
+            date_time_chart.refresh();
+        }
+    }
+}

@@ -106,7 +106,7 @@ namespace SVW_BYSJ_WEB.Data
         {
             string command = "select " + type + " as 参数,count(" + type + ")as 次数 from " +
                 "(select * from 维护记录 where 维修责任人 = '"+engineer.Name+"' or " +
-                "保养责任人 = '" + engineer.Name + "') as a group by " + type;
+                "保养责任人 = '" + engineer.Name + "') as a group by " + type + " order by 次数 DESC";
             return getDictionary(command);
         }
 
@@ -221,7 +221,7 @@ namespace SVW_BYSJ_WEB.Data
             string command = "select 物料状态 as 参数,count(物料状态)as 次数 from 备件信息表 group by 物料状态";
             return getDictionary(command);
         }
-        static Dictionary<string, int> getDictionary(string command)
+        static Dictionary<string, int> getDictionary(string command)            //生成字典数据的通用方法
         {
             Dictionary<string, int> partTypeIndex = new Dictionary<string, int>();
             using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
@@ -353,21 +353,62 @@ namespace SVW_BYSJ_WEB.Data
             string command = "select 工位 as 参数,count(工位)as 次数 from 维护记录 where 故障类型 = '" + FailureMode + "' group by 工位 order by 次数 DESC";
             return getDictionary(command);
         }
-        public static Dictionary<string, int> GetStationTimeSumByMode           //获取特定故障模式下某失效模式的数量
+        public static Dictionary<string, int> GetStationCount()                 //获取特定故障模式下某失效模式的数量
+        {
+            string command = "select  TOP 20 工位 as 参数,count(工位)as 次数 from 维护记录 group by 工位 order by 次数 DESC";
+            return getDictionary(command);
+        }
+        public static Dictionary<string, int> GetStationTimeSumByMode           //获取特定故障模式下某失效模式的时间和
             (string FailureMode)
         {
             string command = "select 工位 as 参数,sum(故障修理时间)as 次数 from 维护记录 where " +
                 "故障类型 = '" + FailureMode + "' group by 工位 order by 次数 DESC";
             return getDictionary(command);
         }
+        public static Dictionary<string, int> GetStationTimeSum()               //获取特定故障模式下某失效模式的时间和
 
-        public static IList<repairRecord> GetRecordBySummary(string FailureMode,//根据故障模式和故障细节搜索维修单
-            string FailureDetail)
         {
-            IList<repairRecord> recordList = new List<repairRecord>();
-            string command = "select * from 维护记录 where 故障类型 = '" + FailureMode + "' AND 故障内容='" + FailureDetail + "'";
-            return GetRecord(command);
+            string command = "select TOP 20 工位 as 参数,sum(故障修理时间)as 次数 from 维护记录 " +
+                " group by 工位 order by 次数 DESC";
+            return getDictionary(command);
         }
+        public static Dictionary<string, int> GetTimeSumByDate()                //获取月份内失效时间统计
+
+        {
+            string command = "select TOP 10 sum(故障修理时间)'总时间',year(维护日期) '年',month(维护日期)'月'  from 维护记录 group by year(维护日期),month(维护日期) order by year(维护日期),month(维护日期)";
+            Dictionary<string, int> partTypeIndex = new Dictionary<string, int>();
+            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
+            {
+                sqlConn.Open();
+                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
+                SqlDataReader reader = sqlComm.ExecuteReader();
+                while (reader.Read())
+                {
+                    partTypeIndex.Add((int)reader["年"]+"年"+(int)reader["月"]+"月", (int)reader["总时间"]);
+                }
+            }
+            return partTypeIndex;
+        }
+        public static Dictionary<string, int> GetTimeSumByDate                  //获取月份内失效时间统计
+            (DateTime date1,DateTime date2)                
+
+        {
+            string command = "select TOP 10 sum(故障修理时间)'总时间',维护日期  from 维护记录" +
+                " where 维护日期 >= '" + date1 + "' and 维护日期 <= '" + date2 + "' group by 维护日期 order by 维护日期";
+            Dictionary<string, int> partTypeIndex = new Dictionary<string, int>();
+            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
+            {
+                sqlConn.Open();
+                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
+                SqlDataReader reader = sqlComm.ExecuteReader();
+                while (reader.Read())
+                {
+                    partTypeIndex.Add(((DateTime)reader["维护日期"]).ToString("d"), (int)reader["总时间"]);
+                }
+            }
+            return partTypeIndex;
+        }
+
         public static IList<repairRecord> GetRecordByStation                    //根据故障模式和工位搜索维修单
             (string Mode,string Station)
         {
@@ -395,7 +436,14 @@ namespace SVW_BYSJ_WEB.Data
             string command = "select * from 维护记录 where "+type+" like '%" + keyword + "%'"; ;
             return GetRecord(command);
         }
-        static IList<repairRecord> GetRecord(string command)
+        public static IList<repairRecord> SearchRecord                          //根据日期搜索维修单
+            (DateTime? date)
+        {
+            IList<repairRecord> recordList = new List<repairRecord>();
+            string command = "select * from 维护记录 where 维护日期 = '" + date +"'";
+            return GetRecord(command);
+        }
+        static IList<repairRecord> GetRecord(string command)                    //获取维护记录的通用方法
         {
             IList<repairRecord> recordList = new List<repairRecord>();
             using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
