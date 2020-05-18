@@ -14,7 +14,7 @@
                             <BInput TValue="string"></BInput>
                         </BFormItem>
                         <BFormItem TValue="string" Name="@nameof(Models.SparePart.Description)" Label="中/英文描述/规格型" IsRequired="true">
-                            <BSBasicInput InputType="BlazorStrap.InputType.TextArea" Rows="2" Value="string.Empty" />
+                            <BInput TValue="string" Type="@Blazui.Component.Input.InputType.Textarea"/>
                         </BFormItem>
                     </div>
                 </div>

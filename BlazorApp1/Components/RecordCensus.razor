@@ -2,8 +2,8 @@
 @using Data
 
     <div class="card-group">
-        <Bar_Horizontal header="维护时长 TOP20 工位" Width="20" Height="25" sourceData="SqlServerCtl.GetStationCount()" />
-        <Bar_Horizontal header="维护次数 TOP20 工位" Width="20" Height="25" sourceData="SqlServerCtl.GetStationTimeSum()" />        
+        <Bar_Horizontal header="维护次数 TOP20 工位" Width="20" Height="25" sourceData="SqlServerCtl.GetStationCount()" />
+        <Bar_Horizontal header="维护时长 TOP20 工位" Width="20" Height="25" sourceData="SqlServerCtl.GetStationTimeSum()" />        
     </div>
     <Bar_Vertical header="维护时长 VS 月份" Width="30" Height="15" sourceData="SqlServerCtl.GetTimeSumByDate()" isSingleColor="true" />
     <div class="card" style="margin:1rem">        
