@@ -1,65 +1,196 @@
 ﻿@page "/prediction"
 @using Data
+@using Models
+@using SVW_BYSJ_WEB.Components
 
 <div class="card-columns">
     <div class="card" style="margin:1rem">
-        <h4 class="card-header">轴承数据集</h4>
-        <img src="../Image/BearingResult.png" class="card-img-top" alt="Result Chart for Bearing Dataset">
-        <div class="card-body">
-            <h5 class="card-title">算法选择</h5>
-            <p class="card-text">重采样方法：ENN</p>
-            <p class="card-text">训练集比例：0.5</p>
-            <p class="card-text">数据集总数：9965</p>
-            <h5 class="card-title">当前模型结果</h5>
-            <p class="card-text">准确率：1.0 | 精确度：1.0 | 召回率：0.83</p>
-            <a href="https://www.legubiao.cn/?p=421" class="btn btn-primary">KNN算法说明</a>
-            <a href="https://www.legubiao.cn/?p=415" class="btn btn-primary">SVM算法说明</a>
-        </div>
-    </div>
-
-    <div class="card" style="margin:1rem">
-        <h4 class="card-header">涂胶设备数据集</h4>
-        <img src="../Image/gluResult.png" class="card-img-top" alt="Result Chart for SVW_Glu Dataset">
-        <div class="card-body">
-            <h5 class="card-title">算法选择</h5>
-            <p class="card-text">训练集比例：0.4</p>
-            <p class="card-text">数据集总数：792</p>
-            <h5 class="card-title">当前模型结果</h5>
-            <p class="card-text">准确率：1.0 | 精确度：1.0 | 召回率：1.0</p>
-        </div>
-    </div>
-
-    <div class="card" style="margin:1rem">
-        <h5 class="card-header">原始数据查询</h5>
-        <div class="card-body">
-            <div class="input-group">
-                <h5 class="card-title">轴承数据集原始数据</h5>
-                <input type="text" class="form-control" placeholder="在此数据数据的ID" @bind-value="keyword1">
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button" @onclick="SearchOnSVWDataSet">查询</button>
-                </div>
-                <h5 class="card-title">涂胶数据集原始数据</h5>
-                <input type="text" class="form-control" placeholder="在此输入数据的ID" @bind-value="keyword2">
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button" @onclick="SearchOnSVWDataSet">查询</button>
-                </div>
+        <BSTabGroup>
+            <div class="card-header">
+                <BSRow style="font:1rem arial,verdana; margin:0" Class="text-center">
+                    <BSCol XS="6"><h4 style="margin:0.2rem">轴承数据集</h4></BSCol>
+                    <BSCol XS="6">
+                        <BSTabList IsList="true" IsPills="true">
+                            <BSTab>
+                                <BSTabLabel>SVM</BSTabLabel>
+                                <BSTabContent>
+                                    <img src="../Image/BearingResultSVM.png" class="card-img-top" alt="Result Chart for Bearing Dataset SVM">
+                                    <BSListGroup IsFlush="true" style="margin-bottom:0.5rem">
+                                        <BSListGroupItem>
+                                            <h5 class="card-title">算法选择</h5>
+                                            <ul>
+                                                <li class="card-text">重采样方法：ENN</li>
+                                                <li class="card-text">训练集比例：0.5</li>
+                                                <li class="card-text">数据集总数：9965</li>
+                                            </ul>
+                                        </BSListGroupItem>
+                                        <BSListGroupItem>
+                                            <h5 class="card-title">当前模型结果</h5>
+                                            <ul>
+                                                <li class="card-text">准确率：1.0</li>
+                                                <li class="card-text">精确度：1.0</li>
+                                                <li class="card-text">召回率：0.83</li>
+                                            </ul>
+                                        </BSListGroupItem>
+                                    </BSListGroup>
+                                    <a href="https://www.legubiao.cn/?p=415" class="btn btn-primary">SVM算法说明</a>
+                                </BSTabContent>
+                            </BSTab>
+                            <BSTab>
+                                <BSTabLabel>KNN</BSTabLabel>
+                                <BSTabContent>
+                                    <img src="../Image/BearingResultKNN.jpg" class="card-img-top" alt="Result Chart for Bearing Dataset KNN">
+                                    <BSListGroup IsFlush="true" style="margin-bottom:0.5rem">
+                                        <BSListGroupItem>
+                                            <h5 class="card-title">算法选择</h5>
+                                            <ul>
+                                                <li class="card-text">重采样方法：ADASYN</li>
+                                                <li class="card-text">训练集比例：0.6</li>
+                                                <li class="card-text">降维方式：PCA降维</li>
+                                            </ul>
+                                        </BSListGroupItem>
+                                        <BSListGroupItem>
+                                            <h5 class="card-title">当前模型结果</h5>
+                                            <ul>
+                                                <li class="card-text">准确率：0.9994</li>
+                                            </ul>
+                                        </BSListGroupItem>
+                                    </BSListGroup>
+                                    <a href="https://www.legubiao.cn/?p=421" class="btn btn-primary">KNN算法说明</a>
+                                </BSTabContent>
+                            </BSTab>
+                        </BSTabList>
+                    </BSCol>
+                </BSRow>
             </div>
-        </div>
+            <div class="card-body">
+                <BSTabSelectedContent />
+            </div>
+        </BSTabGroup>
+    </div>
+
+    <div class="card" style="margin:1rem">
+        <BSTabGroup>
+            <div class="card-header">
+                <BSRow style="font:1rem arial,verdana; margin:0" Class="text-center">
+                    <BSCol XS="6"><h4 style="margin:0.2rem">涂胶数据集</h4></BSCol>
+                    <BSCol XS="6">
+                        <BSTabList IsList="true" IsPills="true">
+                            <BSTab>
+                                <BSTabLabel>SVM</BSTabLabel>
+                                <BSTabContent>
+                                    <img src="../Image/gluResultSVM.png" class="card-img-top" alt="Result Chart for SVW_Glu Dataset SVM">
+                                    <BSListGroup IsFlush="true" style="margin-bottom:0.5rem">
+                                        <BSListGroupItem>
+                                            <h5 class="card-title">算法选择</h5>
+                                            <ul>
+                                                <li class="card-text">训练集比例：0.4</li>
+                                                <li class="card-text">数据集总数：792</li>
+                                            </ul>
+                                        </BSListGroupItem>
+                                        <BSListGroupItem>
+                                            <h5 class="card-title">当前模型结果</h5>
+                                            <ul>
+                                                <li class="card-text">准确率：1.0</li>
+                                                <li class="card-text">精确度：1.0</li>
+                                                <li class="card-text">召回率：1.0</li>
+                                            </ul>
+                                        </BSListGroupItem>
+                                    </BSListGroup>
+                                </BSTabContent>
+                            </BSTab>
+                            <BSTab>
+                                <BSTabLabel>KNN</BSTabLabel>
+                                <BSTabContent>
+                                    <img src="../Image/gluResultKNN.jpg" class="card-img-top" alt="Result Chart for SVW_Glu Dataset KNN">
+                                    <BSListGroup IsFlush="true" style="margin-bottom:0.5rem">
+                                        <BSListGroupItem>
+                                            <h5 class="card-title">算法选择</h5>
+                                            <ul>
+                                                <li class="card-text">重采样方法：先随机欠采样，后用“SMOTE + ENN”采样结合方法</li>
+                                                <li class="card-text">训练集比例：0.6</li>
+                                                <li class="card-text">降维方式：PCA降维</li>
+                                            </ul>
+                                        </BSListGroupItem>
+                                        <BSListGroupItem>
+                                            <h5 class="card-title">当前模型结果</h5>
+                                            <ul>
+                                                <li class="card-text">准确率：1.0</li>
+                                            </ul>
+                                        </BSListGroupItem>
+                                    </BSListGroup>
+                                </BSTabContent>
+                            </BSTab>
+                        </BSTabList>
+                    </BSCol>
+                </BSRow>
+            </div>
+            <div class="card-body">
+                <BSTabSelectedContent />
+            </div>
+        </BSTabGroup>
+    </div>
+
+    <div class="card" style="margin:1rem">
+        <BSTabGroup>
+            <h5 class="card-header">
+                <BSRow style="font:1rem arial,verdana; margin:0" Class="text-center">
+                    <BSTabList IsList="true" IsPills="true">
+                        <BSTab>
+                            <BSTabLabel>涂胶数据集</BSTabLabel>
+                            <BSTabContent>
+                                <div class="input-group card-body" style="margin:0">
+                                    <input type="text" class="form-control" placeholder="在此输入涂胶数据的ID" @bind-value="keyword1">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="button" @onclick="SearchOnSVWDataSet">查询</button>
+                                    </div>
+                                </div>
+                            </BSTabContent>
+                        </BSTab>
+                        <BSTab>
+                            <BSTabLabel>轴承数据集</BSTabLabel>
+                            <BSTabContent>
+                                <div class="input-group card-body">
+                                    <input type="text" class="form-control" placeholder="在此输入轴承数据的ID" @bind-value="keyword2">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="button" @onclick="SearchOnBearingDataSet">查询</button>
+                                    </div>
+                                </div>
+                            </BSTabContent>
+                        </BSTab>
+                    </BSTabList>
+                </BSRow>
+            </h5>
+            <div class="card-body" style="padding:0">
+                <BSTabSelectedContent />
+            </div>
+        </BSTabGroup>
     </div>
 </div>
+
+<SVWDataModelDetail  data="SVWModel" @ref="SVWDetailModal"/>
+<BearingDataModelDetail data="BearingModel" @ref="BearingDetailModal"/>
 
 @code {
     string keyword1;
     string keyword2;
+    SVWDataModel SVWModel;
+    BearingDataModel BearingModel;
+
+    SVWDataModelDetail SVWDetailModal;
+    BearingDataModelDetail BearingDetailModal;
+
+    [Inject]
+    MessageService Message { get; set; }
 
     private async Task SearchOnSVWDataSet()
     {
         await Task.Factory.StartNew(() =>
         {
-            SparePartList = SqlServerCtl.SearchParts(keyword2, false);
-            if (SparePartList.Count != 0)
+            SVWModel = SqlServerCtl.GetSVWDataModel(keyword1);
+            if (SVWModel != null)
             {
-                Message.Show("共搜索到" + SparePartList.Count + "条符合条件的记录", MessageType.Success);
+                SVWDetailModal.Show();
             }
             else
             {
@@ -72,10 +203,10 @@
     {
         await Task.Factory.StartNew(() =>
         {
-            SparePartList = SqlServerCtl.SearchParts(keyword1, false);
-            if (SparePartList.Count != 0)
+            BearingModel = SqlServerCtl.GetBearingDataModel(keyword2);
+            if (BearingModel != null)
             {
-                Message.Show("共搜索到" + SparePartList.Count + "条符合条件的记录", MessageType.Success);
+                BearingDetailModal.Show();
             }
             else
             {

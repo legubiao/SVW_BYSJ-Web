@@ -1,0 +1,58 @@
+﻿@using Models
+
+<BSModal @ref="BearingDataDetailModal">
+    @if (data != null)
+    {
+        <BSModalHeader OnClick="@(() =>BearingDataDetailModal.Hide())">轴承数据详细信息</BSModalHeader>
+        <BSModalBody>
+            <BSListGroup IsFlush="true">
+                <BSListGroupItem>
+                    <BSRow>
+                        <BSCol XS="6">ID：@data.ID</BSCol>
+                        <BSCol XS="6">Label：@data.label</BSCol>
+                    </BSRow>
+                </BSListGroupItem>
+                <BSListGroupItem>
+                    <BSRow>
+                        <BSCol XS="6">std：@data.std.ToString("0.00000")</BSCol>
+                        <BSCol XS="6">var：@data.var.ToString("0.00000")</BSCol>
+                    </BSRow>
+                </BSListGroupItem>
+                <BSListGroupItem>
+                    <BSRow>
+                        <BSCol XS="4"><b>Min</b></BSCol>
+                        <BSCol XS="4"><b>Median</b></BSCol>
+                        <BSCol XS="4"><b>Max</b></BSCol>
+                    </BSRow>
+                    <BSRow>
+                        <BSCol XS="4">@data.min.ToString("0.00000")</BSCol>
+                        <BSCol XS="4">@data.median.ToString("0.00000")</BSCol>
+                        <BSCol XS="4">@data.max.ToString("0.00000")</BSCol>
+                    </BSRow>
+                </BSListGroupItem>
+                <BSListGroupItem>
+                    <BSRow>
+                        <BSCol XS="4"><b>argMax</b></BSCol>
+                        <BSCol XS="4"><b>skew</b></BSCol>
+                        <BSCol XS="4"><b>kuri</b></BSCol>
+                    </BSRow>
+                    <BSRow>
+                        <BSCol XS="4">@data.argmax</BSCol>
+                        <BSCol XS="4">@data.skew.ToString("0.00000")</BSCol>
+                        <BSCol XS="4">@data.kuri.ToString("0.00000")</BSCol>
+                    </BSRow>
+                </BSListGroupItem>
+            </BSListGroup>
+        </BSModalBody>
+    }
+</BSModal>
+@code {
+    BSModal BearingDataDetailModal;
+    [Parameter]
+    public BearingDataModel data { get; set; }
+
+    public void Show()
+    {
+        BearingDataDetailModal.Show();
+    }
+}

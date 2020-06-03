@@ -20,7 +20,7 @@
                 </BSListGroupItem>
                 <BSListGroupItem>
                     <BSRow>
-                        <BSCol XS="6">循环时间（ms）：@data.cycleTiem</BSCol>
+                        <BSCol XS="6">循环时间（ms）：@data.cycleTime</BSCol>
                         <BSCol XS="6">涂胶时间（ms）：@data.workTime</BSCol>
                     </BSRow>
                 </BSListGroupItem>
@@ -56,4 +56,9 @@
     BSModal SVWDataDetailModal;
     [Parameter]
     public SVWDataModel data { get; set; }
+
+    public void Show()
+    {
+        SVWDataDetailModal.Show();
+    }
 }

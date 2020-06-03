@@ -534,6 +534,62 @@ namespace SVW_BYSJ_WEB.Data
             }
         }
 
+        public static SVWDataModel GetSVWDataModel(string keyword)                    //获取大众涂胶数据
+        {
+            string command = "select * from 大众数据集 where ID = '" + keyword + "'";
+            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
+            {
+                sqlConn.Open();
+                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
+                SqlDataReader reader = sqlComm.ExecuteReader();
+                while (reader.Read())
+                {
+                    SVWDataModel model = new SVWDataModel();
+                    model.ID = (double)reader["ID"];
+                    model.ProgramNo = (double)reader["程序号"];
+                    model.result = (string)reader["结果确认"];
+                    model.cycleTime = (double)reader["循环时间"];
+                    model.workTime = (double)reader["涂胶时间"];
+                    model.volume = (string)reader["设定容量"];
+                    model.realVolume = (string)reader["测量的容量"];
+                    model.volumeBias = (string)reader["容量偏差"];
+                    model.pressureIndex = (double)reader["压缩因数"];
+                    model.meanMoment = (double)reader["平均力矩"];
+                    model.maxPressure = (double)reader["最高压力"];
+                    model.meanPreasure = (double)reader["平均压力"];
+                    return model;
+                }
+                return null;
+            }
+        }
+        public static BearingDataModel GetBearingDataModel(string keyword)                    //获取大众涂胶数据
+        {
+            string command = "select * from 轴承数据集 where id = '" + keyword + "'";
+            using (SqlConnection sqlConn = new SqlConnection(getConnectionString()))
+            {
+                sqlConn.Open();
+                SqlCommand sqlComm = new SqlCommand(command, sqlConn);
+                SqlDataReader reader = sqlComm.ExecuteReader();
+                while (reader.Read())
+                {
+                    BearingDataModel model = new BearingDataModel();
+                    model.ID = (double)reader["id"];
+                    model.label = (double)reader["label"];
+                    model.mean = (double)reader["mean"];
+                    model.std = (double)reader["std"];
+                    model.var = (double)reader["var"];
+                    model.min = (double)reader["min"];
+                    model.max = (double)reader["max"];
+                    model.median = (double)reader["median"];
+                    model.argmax = (double)reader["argmax"];
+                    model.skew = (double)reader["skew"];
+                    model.kuri = (double)reader["kuri"];
+                    return model;
+                }
+                return null;
+            }
+        }
+
 
         //通用：更改数据
         static void ManipulateData(string command)
