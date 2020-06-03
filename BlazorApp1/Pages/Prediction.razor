@@ -1,0 +1,86 @@
+﻿@page "/prediction"
+@using Data
+
+<div class="card-columns">
+    <div class="card" style="margin:1rem">
+        <h4 class="card-header">轴承数据集</h4>
+        <img src="../Image/BearingResult.png" class="card-img-top" alt="Result Chart for Bearing Dataset">
+        <div class="card-body">
+            <h5 class="card-title">算法选择</h5>
+            <p class="card-text">重采样方法：ENN</p>
+            <p class="card-text">训练集比例：0.5</p>
+            <p class="card-text">数据集总数：9965</p>
+            <h5 class="card-title">当前模型结果</h5>
+            <p class="card-text">准确率：1.0 | 精确度：1.0 | 召回率：0.83</p>
+            <a href="https://www.legubiao.cn/?p=421" class="btn btn-primary">KNN算法说明</a>
+            <a href="https://www.legubiao.cn/?p=415" class="btn btn-primary">SVM算法说明</a>
+        </div>
+    </div>
+
+    <div class="card" style="margin:1rem">
+        <h4 class="card-header">涂胶设备数据集</h4>
+        <img src="../Image/gluResult.png" class="card-img-top" alt="Result Chart for SVW_Glu Dataset">
+        <div class="card-body">
+            <h5 class="card-title">算法选择</h5>
+            <p class="card-text">训练集比例：0.4</p>
+            <p class="card-text">数据集总数：792</p>
+            <h5 class="card-title">当前模型结果</h5>
+            <p class="card-text">准确率：1.0 | 精确度：1.0 | 召回率：1.0</p>
+        </div>
+    </div>
+
+    <div class="card" style="margin:1rem">
+        <h5 class="card-header">原始数据查询</h5>
+        <div class="card-body">
+            <div class="input-group">
+                <h5 class="card-title">轴承数据集原始数据</h5>
+                <input type="text" class="form-control" placeholder="在此数据数据的ID" @bind-value="keyword1">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" @onclick="SearchOnSVWDataSet">查询</button>
+                </div>
+                <h5 class="card-title">涂胶数据集原始数据</h5>
+                <input type="text" class="form-control" placeholder="在此输入数据的ID" @bind-value="keyword2">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" @onclick="SearchOnSVWDataSet">查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    string keyword1;
+    string keyword2;
+
+    private async Task SearchOnSVWDataSet()
+    {
+        await Task.Factory.StartNew(() =>
+        {
+            SparePartList = SqlServerCtl.SearchParts(keyword2, false);
+            if (SparePartList.Count != 0)
+            {
+                Message.Show("共搜索到" + SparePartList.Count + "条符合条件的记录", MessageType.Success);
+            }
+            else
+            {
+                Message.Show("没有符合条件的记录", MessageType.Warning);
+            }
+        });
+    }
+
+    private async Task SearchOnBearingDataSet()
+    {
+        await Task.Factory.StartNew(() =>
+        {
+            SparePartList = SqlServerCtl.SearchParts(keyword1, false);
+            if (SparePartList.Count != 0)
+            {
+                Message.Show("共搜索到" + SparePartList.Count + "条符合条件的记录", MessageType.Success);
+            }
+            else
+            {
+                Message.Show("没有符合条件的记录", MessageType.Warning);
+            }
+        });
+    }
+}

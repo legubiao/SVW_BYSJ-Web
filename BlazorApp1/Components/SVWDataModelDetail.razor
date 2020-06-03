@@ -1,0 +1,59 @@
+﻿@using Models
+
+<BSModal @ref="SVWDataDetailModal" >
+    @if (data != null)
+    {
+        <BSModalHeader OnClick="@(() =>SVWDataDetailModal.Hide())">SVW数据详细信息</BSModalHeader>
+        <BSModalBody>
+            <BSListGroup IsFlush="true">
+                <BSListGroupItem>
+                    <BSRow>
+                        <BSCol XS="4"><b>【ID】</b></BSCol>
+                        <BSCol XS="4"><b>【程序号】</b></BSCol>
+                        <BSCol XS="4"><b>【运行结果】</b></BSCol>
+                    </BSRow>
+                    <BSRow>
+                        <BSCol XS="4">@data.ID</BSCol>
+                        <BSCol XS="4">@data.ProgramNo</BSCol>
+                        <BSCol XS="4">@data.result</BSCol>
+                    </BSRow>
+                </BSListGroupItem>
+                <BSListGroupItem>
+                    <BSRow>
+                        <BSCol XS="6">循环时间（ms）：@data.cycleTiem</BSCol>
+                        <BSCol XS="6">涂胶时间（ms）：@data.workTime</BSCol>
+                    </BSRow>
+                </BSListGroupItem>
+                <BSListGroupItem>
+                    <BSRow>
+                        <BSCol XS="4"><b>设定容量（ccm）</b></BSCol>
+                        <BSCol XS="4"><b>实测容量</b></BSCol>
+                        <BSCol XS="4"><b>容量偏差</b></BSCol>
+                    </BSRow>
+                    <BSRow>
+                        <BSCol XS="4">@data.volume</BSCol>
+                        <BSCol XS="4">@data.realVolume</BSCol>
+                        <BSCol XS="4">@data.volumeBias</BSCol>
+                    </BSRow>
+                </BSListGroupItem>
+                <BSListGroupItem>
+                    <BSRow>
+                        <BSCol XS="6">平均压力（bar）：@data.meanPreasure</BSCol>
+                        <BSCol XS="6">最高压力（bar）：@data.maxPressure</BSCol>
+                    </BSRow>
+                </BSListGroupItem>
+                <BSListGroupItem>
+                    <BSRow>
+                        <BSCol XS="6">压缩系数（%）：@data.pressureIndex</BSCol>
+                        <BSCol XS="6">平均力矩（%）：@data.meanMoment</BSCol>
+                    </BSRow>
+                </BSListGroupItem>
+            </BSListGroup>
+        </BSModalBody>
+    }
+</BSModal>
+@code {
+    BSModal SVWDataDetailModal;
+    [Parameter]
+    public SVWDataModel data { get; set; }
+}
